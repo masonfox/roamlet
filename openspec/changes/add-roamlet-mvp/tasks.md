@@ -36,7 +36,7 @@
 - [x] 4.3 Add property-based tests and verify that for random text and edits, all bytes outside the replacement range are identical to the original
 - [x] 4.4 Implement `renderNewNote`, UUID generation through the port, title derivation, and slug generation, and verify with tests for all "New note format" and "Quick capture" scenarios
 - [x] 4.5 Implement the node-set comparison for ID warnings and the link text builder with bracket handling, and verify with tests for "ID protection during editing" and bracketed title scenarios
-- [ ] 4.6 Extend the conformance job to apply scripted edits and new notes through these operations, and verify Org-roam still finds the expected nodes and links with byte preservation outside edits
+- [x] 4.6 Extend the conformance job to apply scripted edits and new notes through these operations, and verify Org-roam still finds the expected nodes and links with byte preservation outside edits
 
 ## 5. Milestone 4: Native file layer and save handling
 
