@@ -136,3 +136,68 @@ export interface IdGenerator {
 export interface Clock {
   now(): Date;
 }
+
+/** A folder the user chose. */
+export interface ExternalLibraryRoot {
+  kind: 'external';
+  /** Stable for the folder itself, so picking the same folder again gives the same id. */
+  id: string;
+  /** The folder's name, for display. */
+  name: string;
+  /** The saved platform reference: an iOS bookmark or an Android tree URI. Opaque to the core. */
+  reference: string;
+}
+
+/** Where a library lives (Decision 3). */
+export type LibraryRoot = { kind: 'app_owned' } | ExternalLibraryRoot;
+
+export type RestoreResult =
+  | { status: 'ok'; writable: boolean }
+  /** Still usable, but the saved reference was out of date. `root` carries the refreshed one. */
+  | { status: 'stale'; root: ExternalLibraryRoot; writable: boolean }
+  /** The user or the system withdrew access. */
+  | { status: 'revoked' }
+  /** The folder was moved or deleted. */
+  | { status: 'missing' };
+
+export type PickFolderResult =
+  | { status: 'picked'; root: ExternalLibraryRoot; writable: boolean }
+  | { status: 'cancelled' }
+  /** The provider doesn't allow folder access. */
+  | { status: 'unsupported_provider' }
+  /** The platform doesn't allow this location, such as Android's storage root or `Download`. */
+  | { status: 'restricted_location' }
+  /** The picker could not open or failed. Android issue #50386 needs an app restart to clear. */
+  | { status: 'picker_failed'; message: string };
+
+export type RecoverResult = { ok: true } | { ok: false; failure: FileStoreFailure };
+
+/** Platform access to library roots, provided by the native module (Decision 10). */
+export interface LibraryAccess {
+  /** Shows the system folder picker. Takes the lasting grant, and writes nothing to the folder. */
+  pickFolder(): Promise<PickFolderResult>;
+  /**
+   * Checks that a root can be reached and how, refreshing an out-of-date reference. The app-owned
+   * folder is created here if it doesn't exist yet.
+   */
+  restore(root: LibraryRoot): Promise<RestoreResult>;
+  /**
+   * Finishes or undoes any interrupted save in this root (Decision 4). Data needed for an
+   * unfinished recovery is kept when this fails, so it can run again.
+   */
+  recover(root: LibraryRoot): Promise<RecoverResult>;
+  /** A store over a root that `restore` reported as usable. */
+  openStore(root: LibraryRoot): FileStore;
+}
+
+export type RecordReadResult =
+  /** `text` is null when nothing has been saved yet. */
+  { ok: true; text: string | null } | { ok: false; failure: FileStoreFailure };
+
+export type RecordWriteResult = { ok: true } | { ok: false; failure: FileStoreFailure };
+
+/** Keeps the active library's record in internal storage: `active-library.json` in Decision 3. */
+export interface LibraryRecordStore {
+  read(): Promise<RecordReadResult>;
+  write(text: string): Promise<RecordWriteResult>;
+}
