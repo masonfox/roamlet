@@ -429,9 +429,15 @@ struct LibraryFiles {
   // MARK: - Coordination
 
   private func coordinatedRead<T>(_ url: URL, _ work: (URL) throws -> T) throws -> T {
-    return try coordinate(work) { coordinator, error, accessor in
-      coordinator.coordinate(readingItemAt: url, options: [], error: error, byAccessor: accessor)
+    let coordinator = NSFileCoordinator(filePresenter: nil)
+    let timeout = startTimeout(for: coordinator)
+    defer { timeout.cancel() }
+    var coordinationError: NSError?
+    var result: Result<T, Error>?
+    coordinator.coordinate(readingItemAt: url, options: [], error: &coordinationError) { readable in
+      result = Result { try work(readable) }
     }
+    return try LibraryFiles.finish(result, coordinationError)
   }
 
   private func coordinatedWrite<T>(
@@ -439,26 +445,25 @@ struct LibraryFiles {
     options: NSFileCoordinator.WritingOptions,
     _ work: (URL) throws -> T
   ) throws -> T {
-    return try coordinate(work) { coordinator, error, accessor in
-      coordinator.coordinate(writingItemAt: url, options: options, error: error, byAccessor: accessor)
-    }
-  }
-
-  /// Work inside the accessor must not coordinate again on the same item: that can deadlock.
-  private func coordinate<T>(
-    _ work: (URL) throws -> T,
-    start: (NSFileCoordinator, NSErrorPointer, (URL) -> Void) -> Void
-  ) throws -> T {
     let coordinator = NSFileCoordinator(filePresenter: nil)
-    let timeout = DispatchWorkItem { coordinator.cancel() }
-    DispatchQueue.global().asyncAfter(deadline: .now() + coordinationTimeout, execute: timeout)
+    let timeout = startTimeout(for: coordinator)
     defer { timeout.cancel() }
-
     var coordinationError: NSError?
     var result: Result<T, Error>?
-    start(coordinator, &coordinationError) { url in
-      result = Result { try work(url) }
+    coordinator.coordinate(writingItemAt: url, options: options, error: &coordinationError) { writable in
+      result = Result { try work(writable) }
     }
+    return try LibraryFiles.finish(result, coordinationError)
+  }
+
+  private func startTimeout(for coordinator: NSFileCoordinator) -> DispatchWorkItem {
+    let timeout = DispatchWorkItem { coordinator.cancel() }
+    DispatchQueue.global().asyncAfter(deadline: .now() + coordinationTimeout, execute: timeout)
+    return timeout
+  }
+
+  /// Work inside an accessor must not coordinate again on the same item: that can deadlock.
+  private static func finish<T>(_ result: Result<T, Error>?, _ coordinationError: NSError?) throws -> T {
     if let result {
       return try result.get()
     }
