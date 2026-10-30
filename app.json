@@ -2,6 +2,7 @@
   "expo": {
     "name": "Roamlet",
     "slug": "roamlet",
+    "platforms": ["ios", "android"],
     "version": "0.1.0",
     "orientation": "default",
     "scheme": "roamlet",
