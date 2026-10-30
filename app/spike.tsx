@@ -1,10 +1,16 @@
 // Throwaway screen for tasks 1.6 and 1.7: pick a folder, list it, and replace a file with exact
-// bytes, on a real device. Task 1.12 deletes it. Open it with the roamlet:///spike link.
+// bytes, on a real device. It also runs the A8 measurements for tasks 1.11 and 6.8. Task 1.12
+// deletes it. Open it with the roamlet:///spike link.
 
 import { useState } from 'react';
-import { Button, FlatList, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Button, FlatList, Platform, Pressable, ScrollView, Share, Text, View } from 'react-native';
 
 import { RoamletFs, type FileEntry, type LibraryRoot } from '../modules/roamlet-fs';
+import {
+  formatBenchmarkReport,
+  runBenchmarkOnDevice,
+  type BenchmarkFolder,
+} from '../src/adapters/library-benchmark';
 import { runContractOnDevice } from '../src/adapters/roamlet-fs-contract';
 
 // A BOM, CRLF, an accented character, and an emoji: anything that re-encodes would change these.
@@ -22,10 +28,18 @@ function sameBytes(a: Uint8Array, b: Uint8Array): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
+function deviceDescription(): string {
+  return Platform.OS === 'android'
+    ? `${Platform.constants.Manufacturer} ${Platform.constants.Model}, Android ${Platform.Version}`
+    : `${Platform.OS} ${Platform.Version}`;
+}
+
 export default function Spike() {
   const [root, setRoot] = useState<LibraryRoot>({ kind: 'app_owned' });
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [log, setLog] = useState<string[]>([]);
+  const [benchmarking, setBenchmarking] = useState(false);
+  const [benchmarkReport, setBenchmarkReport] = useState<string | null>(null);
 
   const say = (line: string) => setLog((lines) => [line, ...lines]);
 
@@ -104,6 +118,22 @@ export default function Spike() {
       say(`contract: ${results.length - failed} passed, ${failed} failed`);
     });
 
+  const runBenchmark = async (folder: BenchmarkFolder) => {
+    setBenchmarking(true);
+    setBenchmarkReport(null);
+    await run('benchmark', async () => {
+      const report = await runBenchmarkOnDevice(RoamletFs, root, {
+        folder,
+        device: deviceDescription(),
+        date: new Date().toISOString().slice(0, 10),
+        onStep: (step) => say(`benchmark: ${step}`),
+      });
+      setBenchmarkReport(formatBenchmarkReport(report));
+      say('benchmark: done');
+    });
+    setBenchmarking(false);
+  };
+
   return (
     <View style={{ flex: 1, padding: 16, gap: 8 }}>
       <Text>Root: {root.kind === 'external' ? root.name : 'app-owned'}</Text>
@@ -112,6 +142,22 @@ export default function Spike() {
       <Button title="Restore, recover, and list" onPress={restoreAndRecover} />
       <Button title="Create a test file" onPress={create} />
       <Button title="Run the FileStore contract in a scratch folder" onPress={runContract} />
+      <Button
+        title="Benchmark this folder as Local"
+        disabled={benchmarking}
+        onPress={() => runBenchmark('Local')}
+      />
+      <Button
+        title="Benchmark this folder as Cloud"
+        disabled={benchmarking}
+        onPress={() => runBenchmark('Cloud')}
+      />
+      {benchmarkReport !== null && (
+        <Button
+          title="Share the benchmark report"
+          onPress={() => run('share', async () => void (await Share.share({ message: benchmarkReport })))}
+        />
+      )}
       <Text>Tap a file to replace it with the test bytes. This overwrites it.</Text>
       <FlatList
         style={{ flex: 1 }}
@@ -126,6 +172,7 @@ export default function Spike() {
         )}
       />
       <ScrollView style={{ flex: 1 }}>
+        {benchmarkReport !== null && <Text selectable>{benchmarkReport}</Text>}
         {log.map((line, index) => (
           <Text key={log.length - index} selectable>
             {line}
