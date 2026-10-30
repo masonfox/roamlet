@@ -44,10 +44,10 @@
 - [ ] 5.2 Finish `roamlet-fs` on Android with both save paths, recovery, the batched listing, and name verification, and verify a Kotlin test with a fake documents provider that fails at every step always recovers complete old or new content with no temp files left
 - [ ] 5.3 Finish `roamlet-fs` on iOS with coordination throughout, stale bookmark refresh, access-state reporting, and download status, and verify with the on-device contract test through an EAS build
 - [ ] 5.4 Add the `FileStore` adapter over the module for both root kinds, including the app-owned folder, and verify the contract test passes on one iOS and one Android device
-- [ ] 5.5 Implement save orchestration in core: stale handling, conflict copy creation and naming, new-file collisions, and provider error mapping, and verify with fault-injection tests for "Stale edit protection" and the failed-write scenarios
-- [ ] 5.6 Implement UTF-8 validation and read-only flagging, and verify invalid UTF-8 fixtures stay byte-identical and cannot be saved
-- [ ] 5.7 Implement library state (active root, restore at launch, switch, reconnect, read-only) and verify with tests for every "Loss of folder access" and "Library location" scenario that applies in core
-- [ ] 5.8 Implement archive writing with `fflate`, and verify with tests for UTF-8 names, subdirectories, conflict copies, omitted files, excluded internals, and byte-identical contents
+- [x] 5.5 Implement save orchestration in core: stale handling, conflict copy creation and naming, new-file collisions, and provider error mapping, and verify with fault-injection tests for "Stale edit protection" and the failed-write scenarios
+- [x] 5.6 Implement UTF-8 validation and read-only flagging, and verify invalid UTF-8 fixtures stay byte-identical and cannot be saved
+- [x] 5.7 Implement library state (active root, restore at launch, switch, reconnect, read-only) and verify with tests for every "Loss of folder access" and "Library location" scenario that applies in core
+- [x] 5.8 Implement archive writing with `fflate`, and verify with tests for UTF-8 names, subdirectories, conflict copies, omitted files, excluded internals, and byte-identical contents
 
 ## 6. Milestone 5: Index
 
