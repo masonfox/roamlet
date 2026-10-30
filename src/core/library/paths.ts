@@ -3,7 +3,7 @@
 
 import type { FileEntry } from '../ports';
 
-const CONFLICT_COPY_NAME = /\.conflict-\d{14}(?:-\d+)?$/;
+const CONFLICT_COPY_NAME = /\.org\.conflict-\d{14}(?:-\d+)?$/;
 
 function isHidden(path: string): boolean {
   return path.split('/').some((part) => part.startsWith('.'));

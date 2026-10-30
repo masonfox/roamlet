@@ -11,7 +11,13 @@ import {
   type NoteEdit,
 } from '../../src/core/library';
 import type { NewNote } from '../../src/core/org';
-import type { Clock, CreateResult, DigestResult, FileStoreFailureKind } from '../../src/core/ports';
+import type {
+  Clock,
+  CreateResult,
+  DigestResult,
+  FileStoreFailureKind,
+  ReadResult,
+} from '../../src/core/ports';
 import { MemoryFileStore, sha256Hex } from '../support/memory-file-store';
 
 // Scenarios from specs/note-capture-editing/spec.md and specs/library-storage/spec.md.
@@ -83,6 +89,24 @@ describe('Stale edit protection', () => {
       expect(reloaded.text).toBe(ORIGINAL.replace('First', 'Second'));
       expect((await saveNote(store, reloaded, { body: 'Merged.\n' })).status).toBe('saved');
       expect(store.peekText('note.org')).toContain('Merged.');
+    });
+
+    it('still protects a change that lands just after the read at open', async () => {
+      class ChangesAfterRead extends MemoryFileStore {
+        changed = false;
+
+        async readBytes(path: string): Promise<ReadResult> {
+          const result = await super.readBytes(path);
+          if (!this.changed) this.writeFile(path, 'Changed after the read.\n');
+          this.changed = true;
+          return result;
+        }
+      }
+      const store = new ChangesAfterRead({ 'note.org': ORIGINAL });
+      const note = await open(store);
+
+      expect((await saveNote(store, note, EDIT)).status).toBe('stale');
+      expect(store.peekText('note.org')).toBe('Changed after the read.\n');
     });
 
     it('still protects a change that lands between hashing and reading at open', async () => {
