@@ -197,7 +197,6 @@ internal class RoamletLibrary(
   }
 
   private fun swap(parent: Doc, target: Doc, journal: Journal, bytes: ByteArray) {
-    journals.write(journal)
     // The temp's own name can stay altered: recovery goes by its prefix, and it's about to move.
     var temp = backend.create(parent, journal.tempName)
     backend.write(temp, bytes)
