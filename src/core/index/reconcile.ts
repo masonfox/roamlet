@@ -1,3 +1,5 @@
+import { conflictCopies, isNotePath, isSameOrInside, parentOf } from '../library/paths';
+import { decodeUtf8 } from '../library/utf8';
 import { scan, titleFromFileName } from '../org';
 import type {
   FileEntry,
@@ -7,7 +9,6 @@ import type {
   SqlDriver,
   SqlExecutor,
 } from '../ports';
-import { conflictCopyNotePath } from './conflict-copies';
 import { normalizeSearchText, searchUnits } from './search-text';
 
 /**
@@ -60,8 +61,6 @@ export interface ReconcileResult {
 
 const DEFAULT_DOWNLOAD_BATCH_SIZE = 50;
 
-const ORG_EXTENSION = '.org';
-
 interface IndexedRow {
   path: string;
   size: number;
@@ -74,25 +73,6 @@ interface ConflictCopyRow {
   path: string;
   size: number;
   mtime: number;
-}
-
-const utf8 = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
-
-function decodeUtf8(bytes: Uint8Array): string | null {
-  try {
-    return utf8.decode(bytes);
-  } catch {
-    return null;
-  }
-}
-
-function parentOf(path: string): string {
-  const slash = path.lastIndexOf('/');
-  return slash === -1 ? '' : path.slice(0, slash);
-}
-
-function isSameOrInside(path: string, ancestor: string): boolean {
-  return ancestor === '' || path === ancestor || path.startsWith(`${ancestor}/`);
 }
 
 async function clearFile(tx: SqlExecutor, path: string): Promise<void> {
@@ -304,7 +284,7 @@ async function syncConflictCopies(
 ): Promise<void> {
   const known = await db.all<ConflictCopyRow>('SELECT path, size, mtime FROM conflict_copies');
   const knownByPath = new Map(known.map((row) => [row.path, row]));
-  const listed = entries.filter((entry) => conflictCopyNotePath(entry.path) !== null);
+  const listed = conflictCopies(entries);
   const listedPaths = new Set(listed.map((entry) => entry.path));
   const stale = known.filter((row) => !listedPaths.has(row.path) && !isUnknown(row.path));
   const fresh = listed.filter((entry) => {
@@ -374,7 +354,7 @@ export async function reconcile(
 
   const rows = await db.all<IndexedRow>('SELECT path, size, mtime, hash, status FROM files');
   const indexedByPath = new Map(rows.map((row) => [row.path, row]));
-  const notes = listing.entries.filter((entry) => !entry.isDir && entry.name.endsWith(ORG_EXTENSION));
+  const notes = listing.entries.filter((entry) => !entry.isDir && isNotePath(entry.path));
 
   const downloads: string[] = [];
   let processed = 0;
@@ -392,8 +372,7 @@ export async function reconcile(
     result.removed.push(row.path);
   }
 
-  const fileEntries = listing.entries.filter((entry) => !entry.isDir);
-  await syncConflictCopies(db, fileEntries, isUnknown);
+  await syncConflictCopies(db, listing.entries, isUnknown);
   await requestDownloads(
     files,
     downloads,
