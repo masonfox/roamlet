@@ -21,6 +21,7 @@ module.exports = {
     {
       displayName: 'ui',
       preset: 'jest-expo',
+      setupFilesAfterEnv: ['<rootDir>/test/support/ui-setup.ts'],
       testMatch: [
         '<rootDir>/src/ui/**/*.test.{ts,tsx}',
         '<rootDir>/src/adapters/**/*.test.{ts,tsx}',
