@@ -345,6 +345,12 @@ export async function libraryCounts(db: SqlExecutor): Promise<LibraryCounts> {
   return row as LibraryCounts;
 }
 
+/** Bytes the library's notes take up, as listed. Counts files not on the device too. */
+export async function notesSize(db: SqlExecutor): Promise<number> {
+  const row = await db.get<{ size: number }>('SELECT COALESCE(SUM(size), 0) AS size FROM files');
+  return (row as { size: number }).size;
+}
+
 /** Conflict copies as of the last listing. Kept when a folder can't be listed, like other entries. */
 export async function conflictCopies(db: SqlExecutor): Promise<ConflictCopy[]> {
   const rows = await db.all<{ path: string; size: number; mtime: number }>(

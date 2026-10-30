@@ -124,6 +124,13 @@ describe('index queries', () => {
       await index.reconcile(new MemoryFileStore());
       expect(await index.listFolder('')).toEqual({ folders: [], files: [] });
       expect(await index.counts()).toEqual({ files: 0, nodes: 0, links: 0 });
+      expect(await index.notesSize()).toBe(0);
+    });
+
+    it('adds up the listed size of every note', async () => {
+      const store = new MemoryFileStore({ 'a.org': 'abc', 'daily/b.org': 'abcde', 'image.png': 'no' });
+      await index.reconcile(store);
+      expect(await index.notesSize()).toBe(8);
     });
   });
 

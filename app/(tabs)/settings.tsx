@@ -1,12 +1,3 @@
-import { Text, View } from 'react-native';
+import { SettingsScreen } from '../../src/ui/settings/settings-screen';
 
-import { useTheme } from '../../src/ui/theme';
-
-export default function SettingsScreen() {
-  const theme = useTheme();
-  return (
-    <View style={{ flex: 1, padding: theme.spacing.lg }}>
-      <Text style={[theme.type.body, { color: theme.colors.textMuted }]}>Settings</Text>
-    </View>
-  );
-}
+export default SettingsScreen;

@@ -57,7 +57,7 @@ describe('primary destinations', () => {
       '(tabs)/notes/_layout': NotesLayout,
       '(tabs)/notes/index': NotesScreen,
       '(tabs)/capture': CaptureScreen,
-      '(tabs)/settings': SettingsScreen,
+      '(tabs)/settings': () => <Text>Settings screen</Text>,
     });
     expect(router.getPathname()).toBe('/notes');
 

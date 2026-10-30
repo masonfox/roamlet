@@ -97,6 +97,10 @@ export class LibraryIndex {
     return queries.libraryCounts(await this.db);
   }
 
+  async notesSize(): Promise<number> {
+    return queries.notesSize(await this.db);
+  }
+
   async conflictCopies(): Promise<queries.ConflictCopy[]> {
     return queries.conflictCopies(await this.db);
   }
