@@ -1,26 +1,26 @@
-## 1. Milestone 0: Project foundation and device validation
+﻿## 1. Milestone 0: Project foundation and device validation
 
-- [ ] 1.1 Scaffold an Expo SDK 58 TypeScript app with Expo Router and verify `npx tsc --noEmit` and `npx expo-doctor` pass
-- [ ] 1.2 Create the `app/`, `modules/roamlet-fs/`, `src/ui/`, `src/adapters/`, and `src/core/` layout with a lint rule banning `react-native` and `expo*` imports from `src/core/`, and verify a deliberate violation fails lint
-- [ ] 1.3 Set up Jest with a plain Node project for `src/core/` and a `jest-expo` project for UI, and verify a sample test runs in each
-- [ ] 1.4 Add CI for lint, typecheck, and tests, plus a `LICENSE` file (MIT unless the maintainer decides otherwise), and verify CI passes on a branch
+- [x] 1.1 Scaffold an Expo SDK 58 TypeScript app with Expo Router and verify `npx tsc --noEmit` and `npx expo-doctor` pass
+- [x] 1.2 Create the `app/`, `modules/roamlet-fs/`, `src/ui/`, `src/adapters/`, and `src/core/` layout with a lint rule banning `react-native` and `expo*` imports from `src/core/`, and verify a deliberate violation fails lint
+- [x] 1.3 Set up Jest with a plain Node project for `src/core/` and a `jest-expo` project for UI, and verify a sample test runs in each
+- [x] 1.4 Add CI for lint, typecheck, and tests, plus a `LICENSE` file (MIT unless the maintainer decides otherwise), and verify CI passes on a branch
 - [ ] 1.5 Configure the `expo-file-system` iOS file sharing and open-in-place options and EAS development builds, and verify the app launches on one iOS and one Android device (delivers acceptance criterion 1)
 - [ ] 1.6 Spike `roamlet-fs` on Android (`pickFolder`, `restore`, `list`, `readBytes`, `createExclusive`, `replaceFile`), and verify from a throwaway screen that a file in a picked folder can be listed and replaced with exact bytes and name
 - [ ] 1.7 Spike the same API on iOS, including bookmarks, coordination, `replaceItemAt`, and `requestDownload`, and verify from the same screen through an EAS build
 - [ ] 1.8 Run the provider matrix from `design.md` (iCloud Drive, Dropbox on both platforms, Working Copy, Syncthing or local folder) with a 5,000-note test library, and record a result per provider and test in `docs/validation.md`
 - [ ] 1.9 Re-check Google Drive and OneDrive folder access on iOS, and confirm whether Dropbox on Android offers folder access, and record both in `docs/validation.md`
-- [ ] 1.10 Run assumptions A3–A7, A9, and A10 from `design.md`, and record pass or fail and any fallback taken in `docs/validation.md`
+- [ ] 1.10 Run assumptions A3â€“A7, A9, and A10 from `design.md`, and record pass or fail and any fallback taken in `docs/validation.md`
 - [ ] 1.11 Record A8 baseline numbers for listing and hashing on a local folder and a cloud folder in `docs/validation.md`
 - [ ] 1.12 Apply the go/no-go rules: if iCloud Drive or safe saves on a primary provider aren't reliable, stop and report to the maintainer. Otherwise update `design.md` for any failed assumption, delete the throwaway screen, and verify it is gone from the app
 
 ## 2. Milestone 1: Org scanner
 
-- [ ] 2.1 Define `ports.ts` (`FileStore`, `SqlDriver`, `IdGenerator`, `Clock`) and the `OrgDocument` types, and verify they compile with no platform imports
-- [ ] 2.2 Create the fixture corpus in `test/fixtures/` covering headings, property drawers, source blocks, links, metadata, CRLF, mixed line endings, BOM, Unicode, malformed drawers, unterminated blocks, comma escapes, duplicate IDs, sync-conflict copies, and broken links, and verify each fixture is documented in a fixture README
-- [ ] 2.3 Implement line scanning for headings, planning lines, drawers, keywords, blocks, comments, and fixed-width lines with source offsets, and verify with tests for the "Org block and heading precedence" and "Tolerant parsing" specs
-- [ ] 2.4 Implement file-level and heading-level node extraction, `ROAM_EXCLUDE`, title and tag parsing, and TODO and priority stripping, and verify with tests for each node recognition scenario
-- [ ] 2.5 Implement the inline tokenizer for links and emphasis, plus link attribution to the nearest node, and verify with tests for all "ID link recognition" scenarios
-- [ ] 2.6 Add property-based tests and verify that the scanner never throws, offsets always stay within bounds, and LF and CRLF forms of any input give equivalent results
+- [x] 2.1 Define `ports.ts` (`FileStore`, `SqlDriver`, `IdGenerator`, `Clock`) and the `OrgDocument` types, and verify they compile with no platform imports
+- [x] 2.2 Create the fixture corpus in `test/fixtures/` covering headings, property drawers, source blocks, links, metadata, CRLF, mixed line endings, BOM, Unicode, malformed drawers, unterminated blocks, comma escapes, duplicate IDs, sync-conflict copies, and broken links, and verify each fixture is documented in a fixture README
+- [x] 2.3 Implement line scanning for headings, planning lines, drawers, keywords, blocks, comments, and fixed-width lines with source offsets, and verify with tests for the "Org block and heading precedence" and "Tolerant parsing" specs
+- [x] 2.4 Implement file-level and heading-level node extraction, `ROAM_EXCLUDE`, title and tag parsing, and TODO and priority stripping, and verify with tests for each node recognition scenario
+- [x] 2.5 Implement the inline tokenizer for links and emphasis, plus link attribution to the nearest node, and verify with tests for all "ID link recognition" scenarios
+- [x] 2.6 Add property-based tests and verify that the scanner never throws, offsets always stay within bounds, and LF and CRLF forms of any input give equivalent results
 
 ## 3. Milestone 2: Emacs conformance harness
 
@@ -60,7 +60,7 @@
 - [ ] 6.7 Add a test that an incrementally built index and a rebuilt index are identical after a random sequence of file operations, and a test that resumes after an interrupted rebuild
 - [ ] 6.8 Run the A8 benchmark for rebuild, no-change reconcile, and search on a mid-range Android device, and record results in `docs/validation.md`
 
-## 7. Milestone 6: Vertical slice — Open folder, Browse, Read
+## 7. Milestone 6: Vertical slice â€” Open folder, Browse, Read
 
 - [ ] 7.1 Build the three-destination navigation with light and dark theme tokens and system typography, and verify on both platforms that switching tabs keeps state and appearance changes apply live
 - [ ] 7.2 Wire app startup (restore access, recovery, then reconcile) and foreground reconcile, and verify on a device that a file changed by a sync tool appears after returning to the app
@@ -72,12 +72,12 @@
 - [ ] 7.8 Add ID link navigation, heading positioning, and unresolved link behavior, and verify by following resolved, heading, and missing links on a device (delivers acceptance criterion 4)
 - [ ] 7.9 Add the backlinks and outgoing links sections, and verify on a device that the listed backlinks match the Org-roam oracle's output for the same folder (delivers acceptance criterion 5)
 
-## 8. Milestone 7: Vertical slice — Create
+## 8. Milestone 7: Vertical slice â€” Create
 
 - [ ] 8.1 Build the Capture screen with title derivation, draft persistence, and the empty-state guard, and verify on a device that killing the app during capture restores the text
 - [ ] 8.2 Connect capture to `createExclusive` and the index, including read-only and unavailable library handling, and verify a captured note appears immediately in the tree and search, is written to the chosen folder's root, and passes the Org-roam oracle (delivers acceptance criterion 6)
 
-## 9. Milestone 8: Vertical slice — Edit
+## 9. Milestone 8: Vertical slice â€” Edit
 
 - [ ] 9.1 Build the editor with title field, plain-text body, explicit save, drafts, discard confirmation, and the size limit, and verify with UI tests for each flow
 - [ ] 9.2 Connect saves to splicing, the ID warning, `replaceFile`, stale-edit handling, and the index, and verify on a device that a file diff after editing one word shows only that word (delivers acceptance criterion 7)
@@ -97,4 +97,4 @@
 - [ ] 11.2 Edit the same notes in Emacs, sync them back, and verify the changes appear in Roamlet. Change a note in Emacs while it's open in the Roamlet editor, and verify the stale-edit choices appear and nothing is overwritten
 - [ ] 11.3 Force a sync conflict on Dropbox and Syncthing, and verify the conflict copy shows up with a duplicate ID report and neither file is changed
 - [ ] 11.4 Write the README and compatibility notes, covering supported providers, known limitations, supported Org subset, and how to retrieve notes from the app-owned folder, and verify each limitation in `design.md` is covered
-- [ ] 11.5 Walk through acceptance criteria 1–10, as revised in `proposal.md`, on both platforms, and record the results in `docs/validation.md`
+- [ ] 11.5 Walk through acceptance criteria 1â€“10, as revised in `proposal.md`, on both platforms, and record the results in `docs/validation.md`

@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000046
+No closing line at the file level, and this is not a property.
+
+* Heading with no closing line
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000047
+Text [[id:00000000-0000-4000-8000-000000000001]].
+* Heading with a stray line inside
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000048
+this line is not a property
+:END:
+* Stray end line
+:END:
+* Valid heading after the damage
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000049
+:END:
+Text [[id:00000000-0000-4000-8000-000000000002]].

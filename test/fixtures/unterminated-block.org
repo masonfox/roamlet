@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000050
+:END:
+#+title: Unterminated blocks
+
+#+begin_src python
+print("[[id:00000000-0000-4000-8000-000000000001]]")
+
+* Heading ends the unterminated block
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000051
+:END:
+#+begin_example
+A heading is the deliberate unescaped star line below.
+* Org treats this as a heading even inside a block
+#+end_example
+Link [[id:00000000-0000-4000-8000-000000000002]].
+#+end_src
+#+begin_quote
+Quote with no end at the end of the file [[id:00000000-0000-4000-8000-000000000003]].

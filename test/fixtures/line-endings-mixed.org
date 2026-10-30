@@ -1,0 +1,16 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000040
+:END:
+#+title: Line endings
+#+filetags: :eol:
+
+Link: [[id:00000000-0000-4000-8000-000000000001][description]].
+
+* TODO Heading :tag:
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000041
+:END:
+#+begin_src text
+[[id:00000000-0000-4000-8000-000000000002]]
+#+end_src
+Link: [[id:00000000-0000-4000-8000-000000000003]].

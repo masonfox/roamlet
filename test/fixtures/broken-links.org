@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000056
+:END:
+#+title: Broken links
+
+Target does not exist: [[id:00000000-0000-4000-8000-999999999999][gone]].
+Empty target: [[id:]].
+No closing brackets: [[id:00000000-0000-4000-8000-000000000001
+Empty description: [[id:00000000-0000-4000-8000-000000000001][]].

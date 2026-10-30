@@ -1,0 +1,28 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000001
+:END:
+#+title: Headings
+
+Intro text.
+
+* Plain heading
+Text under a plain heading.
+* TODO [#A] Heading node :tag1:
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000002
+:END:
+Text owned by the heading node.
+** DONE Nested node :tag2:tag_3:
+SCHEDULED: <2026-01-15 Thu>
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000003
+:END:
+*** Deep heading without an ID
+Text owned by the nested node.
+**** [#B] Priority only :deep:
+*not a heading, no space after the star
+ * an indented star is a list item
+* COMMENT Commented heading
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000004
+:END:

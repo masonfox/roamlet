@@ -1,0 +1,31 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000021
+:END:
+#+title: Links
+#+related: [[id:00000000-0000-4000-8000-000000000001][link in a keyword]]
+#+transclude: [[id:00000000-0000-4000-8000-000000000002]]
+
+With a description: [[id:00000000-0000-4000-8000-000000000001][a link]].
+Without one: [[id:00000000-0000-4000-8000-000000000002]].
+Inside emphasis: *[[id:00000000-0000-4000-8000-000000000003][bold]]* and /[[id:00000000-0000-4000-8000-000000000004]]/.
+Across lines: [[id:00000000-0000-4000-8000-000000000005][two
+lines]].
+Plain form id:00000000-0000-4000-8000-000000000006. Angle form <id:00000000-0000-4000-8000-000000000007>.
+Other types: [[https://example.com][web]] https://example.org [[file:a.org][file]] [[Fuzzy]].
+Not links: =[[id:00000000-0000-4000-8000-000000000008]]= ~[[id:00000000-0000-4000-8000-000000000009]]~.
+
+# [[id:00000000-0000-4000-8000-000000000008]] in a comment
+: [[id:00000000-0000-4000-8000-000000000008]] in a fixed-width line
+  : [[id:00000000-0000-4000-8000-000000000008]] in an indented fixed-width line
+
+* Heading with a link [[id:00000000-0000-4000-8000-000000000010][to a note]] in its title
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000022
+:RELATED:  [[id:00000000-0000-4000-8000-000000000011]]
+:ROAM_REFS: [[id:00000000-0000-4000-8000-000000000012]]
+:END:
+Owned by the heading node: [[id:00000000-0000-4000-8000-000000000013]].
+** Heading without an ID
+Still owned by the heading node above: [[id:00000000-0000-4000-8000-000000000014]].
+* Back at the top
+Owned by the file node: [[id:00000000-0000-4000-8000-000000000015]].

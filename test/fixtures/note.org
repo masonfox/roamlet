@@ -1,0 +1,11 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000054
+:END:
+#+title: Note in conflict
+
+Text from one device.
+
+* Heading in conflict
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000055
+:END:

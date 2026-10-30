@@ -1,0 +1,7 @@
+#+FILETAGS: :a:b:
+#+TITLE:   Example
+#+title: Second title is ignored
+#+filetags: :c:a:
+#+AUTHOR: Someone
+
+Body text.

@@ -1,0 +1,11 @@
+#+title: Links with no file node
+
+Outside any node: [[id:00000000-0000-4000-8000-000000000001]].
+
+* Plain heading
+Still outside any node: [[id:00000000-0000-4000-8000-000000000002]].
+* Heading node
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000023
+:END:
+Inside a node: [[id:00000000-0000-4000-8000-000000000003]].

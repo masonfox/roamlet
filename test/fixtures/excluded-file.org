@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:           00000000-0000-4000-8000-000000000034
+:ROAM_EXCLUDE: t
+:END:
+#+title: Excluded file
+
+* Heading node inside
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000035
+:END:

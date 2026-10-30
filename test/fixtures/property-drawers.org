@@ -1,0 +1,33 @@
+:properties:
+:id:       00000000-0000-4000-8000-000000000013
+:CUSTOM:   kept
+:end:
+#+title: Drawer variants
+
+* Lowercase drawer on a heading
+:properties:
+:id: 00000000-0000-4000-8000-000000000014
+:end:
+* Planning before the drawer
+DEADLINE: <2026-02-01 Sun> SCHEDULED: <2026-01-15 Thu>
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000015
+:END:
+* Blank line before the drawer
+
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000016
+:END:
+* Drawer after text
+Some text first.
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000017
+:END:
+* Empty ID value
+:PROPERTIES:
+:ID:
+:END:
+* Custom drawer with a link
+:LOGBOOK:
+Reviewed [[id:00000000-0000-4000-8000-000000000013][the file node]].
+:END:

@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000018
+:END:
+#+title: Blocks
+
+#+begin_src python :results output
+print("[[id:00000000-0000-4000-8000-000000000001]]")
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+(message "[[id:00000000-0000-4000-8000-000000000001]]")
+#+END_SRC
+
+#+begin_example
+[[id:00000000-0000-4000-8000-000000000001]]
+#+end_example
+
+#+begin_comment
+[[id:00000000-0000-4000-8000-000000000001]]
+#+end_comment
+
+#+begin_export html
+<a>[[id:00000000-0000-4000-8000-000000000001]]</a>
+#+end_export
+
+  #+begin_src text
+  Indented block [[id:00000000-0000-4000-8000-000000000001]]
+  #+end_src
+
+#+begin_quote
+Quotes are parsed: [[id:00000000-0000-4000-8000-000000000001][counted]].
+#+end_quote
