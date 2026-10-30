@@ -52,9 +52,9 @@ export function editableTitle(doc: OrgDocument): string {
 
 /**
  * Applies an edited title to the file. Replaces only the value of the title keyword, or adds a
- * `#+title` line after the file's drawer, or at the start of a file with no drawer. Touching only
- * the header keeps `headerEnd` where the body expects it, so title and body edits can follow each
- * other as long as the file is scanned again in between.
+ * `#+title` line after the file's drawer, or at the start of a file with no drawer. A save with
+ * both edits runs `spliceBody` first and scans again, since text before a `#+title` puts the
+ * keyword in the body, where the unchanged body would otherwise restore the old title.
  */
 export function spliceTitle(text: string, doc: OrgDocument, newTitle: string): SpliceResult {
   const title = newTitle.replace(/\s*[\r\n]+\s*/g, ' ').trim();

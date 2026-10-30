@@ -116,8 +116,17 @@ describe('Non-destructive save: spliceTitle', () => {
 
   it('combines with a body edit when the file is scanned again in between', () => {
     const text = `:PROPERTIES:\r\n:ID: ${ID}\r\n:END:\r\nBody\r\n`;
-    const titled = retitle(text, 'New');
-    const result = spliceBody(titled.text, scan(titled.text), 'Changed\n');
-    expect(result.text).toBe(`:PROPERTIES:\r\n:ID: ${ID}\r\n:END:\r\n#+title: New\r\nChanged\r\n`);
+    const edited = spliceBody(text, scan(text), 'Changed\n');
+    expect(retitle(edited.text, 'New').text).toBe(
+      `:PROPERTIES:\r\n:ID: ${ID}\r\n:END:\r\n#+title: New\r\nChanged\r\n`,
+    );
+  });
+
+  it('keeps both edits when the title keyword sits in the body', () => {
+    const text = 'Some text\n#+title: Old\n';
+    const doc = scan(text);
+    const newBody = editableBody(text, doc).replace('Some', 'Other');
+    const edited = spliceBody(text, doc, newBody);
+    expect(retitle(edited.text, 'New').text).toBe('Other text\n#+title: New\n');
   });
 });
