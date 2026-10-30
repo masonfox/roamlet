@@ -1,4 +1,7 @@
+export { checkIdChanges } from './id-check';
+export type { IdWarning } from './id-check';
 export { linkDisplayText, tokenizeInline } from './inline';
+export { insertLink, linkText } from './link-text';
 export { alternateFileName, parseCapture, renderNewNote } from './new-note';
 export type { CapturedNote, NewNote } from './new-note';
 export { scan, titleFromFileName, unescapeBlockContent } from './scan';
