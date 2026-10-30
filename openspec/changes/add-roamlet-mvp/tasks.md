@@ -79,7 +79,7 @@
 
 ## 9. Milestone 8: Vertical slice — Edit
 
-- [ ] 9.1 Build the editor with title field, plain-text body, explicit save, drafts, discard confirmation, and the size limit, and verify with UI tests for each flow
+- [x] 9.1 Build the editor with title field, plain-text body, explicit save, drafts, discard confirmation, and the size limit, and verify with UI tests for each flow
 - [ ] 9.2 Connect saves to splicing, the ID warning, `replaceFile`, stale-edit handling, and the index, and verify on a device that a file diff after editing one word shows only that word (delivers acceptance criterion 7)
 - [ ] 9.3 Add link insertion through search in Capture and the editor, and verify an inserted link resolves in the app and appears as a backlink in the Org-roam oracle
 - [ ] 9.4 Kill-test saves on each provider in the matrix during repeated editing, and verify no note is left partial or missing after relaunch
@@ -88,7 +88,7 @@
 
 - [ ] 10.1 Build archive export through the share sheet, and verify on a device that a library in the app-owned folder can be fully retrieved with byte-identical files (delivers acceptance criterion 8, together with task 11.1 for chosen folders)
 - [ ] 10.2 Build Rebuild Index with progress in Settings, and verify on a device that killing the app during a rebuild resumes correctly and results match the files (delivers acceptance criterion 10)
-- [ ] 10.3 Build the library status, storage information, statistics, and diagnostics views with per-category file lists, and verify with fixtures containing every problem type, including conflict copies and undownloaded files
+- [x] 10.3 Build the library status, storage information, statistics, and diagnostics views with per-category file lists, and verify with fixtures containing every problem type, including conflict copies and undownloaded files
 - [ ] 10.4 Audit screen reader labels and font scaling on the main flows, including the folder tree, and verify using VoiceOver and TalkBack on one device each
 
 ## 11. Milestone 10: End-to-end acceptance
