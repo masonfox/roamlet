@@ -89,7 +89,10 @@ export interface FileStore {
   list(): Promise<ListResult>;
   readBytes(path: string): Promise<ReadResult>;
   digest(path: string): Promise<DigestResult>;
-  /** Creates a new file. Never replaces an existing one, and verifies the final name. */
+  /**
+   * Creates a new file. Never replaces an existing one, and verifies the final name. The parent
+   * folder must already exist: a missing one is a `not_found` failure.
+   */
   createExclusive(path: string, bytes: Uint8Array): Promise<CreateResult>;
   /**
    * Atomically replaces a file if its current hash is `expectedHash`, doing the check as close to
