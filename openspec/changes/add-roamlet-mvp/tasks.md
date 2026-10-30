@@ -51,13 +51,13 @@
 
 ## 6. Milestone 5: Index
 
-- [ ] 6.1 Implement the Expo and Node `SqlDriver` adapters and a versioned per-library schema with FTS5, and verify a mismatched `user_version` causes the database to be recreated
-- [ ] 6.2 Implement `reconcile` with per-file transactions, and verify with tests for added, changed, removed, renamed, and timestamp-only changes
-- [ ] 6.3 Add listing-failure, partial-failure, and evicted-file handling to `reconcile`, and verify with tests for every "Index survives loss of access" scenario, including that a failed listing removes nothing
-- [ ] 6.4 Add not-downloaded entries and batched download requests, and verify with tests that such files appear by name and gain content once available
-- [ ] 6.5 Implement queries for the folder tree, backlinks, outgoing links, link resolution, and duplicate and problem reporting, and verify with tests for "Indexed content" and "Data problem reporting"
-- [ ] 6.6 Implement search with title weighting, diacritic handling, and CJK fallback, and verify with tests for all "Search" scenarios that apply at the query level
-- [ ] 6.7 Add a test that an incrementally built index and a rebuilt index are identical after a random sequence of file operations, and a test that resumes after an interrupted rebuild
+- [x] 6.1 Implement the Expo and Node `SqlDriver` adapters and a versioned per-library schema with FTS5, and verify a mismatched `user_version` causes the database to be recreated
+- [x] 6.2 Implement `reconcile` with per-file transactions, and verify with tests for added, changed, removed, renamed, and timestamp-only changes
+- [x] 6.3 Add listing-failure, partial-failure, and evicted-file handling to `reconcile`, and verify with tests for every "Index survives loss of access" scenario, including that a failed listing removes nothing
+- [x] 6.4 Add not-downloaded entries and batched download requests, and verify with tests that such files appear by name and gain content once available
+- [x] 6.5 Implement queries for the folder tree, backlinks, outgoing links, link resolution, and duplicate and problem reporting, and verify with tests for "Indexed content" and "Data problem reporting"
+- [x] 6.6 Implement search with title weighting, diacritic handling, and CJK fallback, and verify with tests for all "Search" scenarios that apply at the query level
+- [x] 6.7 Add a test that an incrementally built index and a rebuilt index are identical after a random sequence of file operations, and a test that resumes after an interrupted rebuild
 - [ ] 6.8 Run the A8 benchmark for rebuild, no-change reconcile, and search on a mid-range Android device, and record results in `docs/validation.md`
 
 ## 7. Milestone 6: Vertical slice — Open folder, Browse, Read
