@@ -1,0 +1,68 @@
+name: Native iOS
+
+on:
+  push:
+    paths:
+      - modules/roamlet-fs/**
+      - app.json
+      - package.json
+      - package-lock.json
+      - .github/workflows/native-ios.yml
+  pull_request:
+    paths:
+      - modules/roamlet-fs/**
+      - app.json
+      - package.json
+      - package-lock.json
+      - .github/workflows/native-ios.yml
+
+jobs:
+  core-tests:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the file layer tests on macOS
+        working-directory: modules/roamlet-fs/ios
+        run: swift test
+      - name: Run the file layer tests on the iOS simulator
+        working-directory: modules/roamlet-fs/ios
+        run: |
+          udid=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          ios = sorted((k for k in devices if 'iOS' in k and devices[k]), key=lambda k: [int(p) for p in k.rsplit('iOS-', 1)[1].split('-')])
+          print(next(d['udid'] for d in devices[ios[-1]] if d['name'].startswith('iPhone')))
+          ")
+          xcodebuild test -scheme RoamletFsCore -destination "platform=iOS Simulator,id=$udid"
+
+  app-build:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Generate the iOS project
+        run: npx expo prebuild --platform ios --no-install
+      - name: Install pods
+        working-directory: ios
+        run: pod install
+      - name: Check that the module is linked
+        working-directory: ios
+        run: grep -q "RoamletFs" Podfile.lock
+      - name: Compile for the simulator
+        working-directory: ios
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -workspace Roamlet.xcworkspace \
+            -scheme Roamlet \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "generic/platform=iOS Simulator" \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 200
