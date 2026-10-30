@@ -143,10 +143,6 @@ function newId(random: () => number): string {
   );
 }
 
-function pad(value: number, width: number): string {
-  return String(value).padStart(width, '0');
-}
-
 function pick<T>(random: () => number, items: readonly T[]): T {
   return items[Math.floor(random() * items.length)];
 }
