@@ -17,7 +17,8 @@ describeWithOutput('writing the round-trip corpus', () => {
     mkdirSync(directory, { recursive: true });
     const { files } = buildScenario(name, readOrgFiles(FIXTURES));
     for (const [file, bytes] of Object.entries(files)) {
-      writeFileSync(join(directory, file), bytes);
+      // INJECTED FAULT, to be reverted: drops the zero-width space that keeps brackets apart.
+      writeFileSync(join(directory, file), Buffer.from(bytes).toString('utf8').replaceAll('​', ''));
     }
   });
 });
