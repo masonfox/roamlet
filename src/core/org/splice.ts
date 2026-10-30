@@ -45,6 +45,48 @@ export function spliceBody(text: string, doc: OrgDocument, newBody: string): Spl
   return { changed: true, text: splice(text, span, replacement), span, replacement };
 }
 
+/** The title as the editor shows it: as written, so an untouched title is not a change. */
+export function editableTitle(doc: OrgDocument): string {
+  return doc.titleKeyword ? doc.titleKeyword.value : '';
+}
+
+/**
+ * Applies an edited title to the file. Replaces only the value of the title keyword, or adds a
+ * `#+title` line after the file's drawer, or at the start of a file with no drawer. Touching only
+ * the header keeps `headerEnd` where the body expects it, so title and body edits can follow each
+ * other as long as the file is scanned again in between.
+ */
+export function spliceTitle(text: string, doc: OrgDocument, newTitle: string): SpliceResult {
+  const title = newTitle.replace(/\s*[\r\n]+\s*/g, ' ').trim();
+  if (title === editableTitle(doc)) return { changed: false, text };
+
+  const keyword = doc.titleKeyword;
+  if (keyword) {
+    const { valueSpan } = keyword;
+    // `#+title:` with no value has no blank to keep, and the new value reads better with one.
+    const blank = title !== '' && text[valueSpan.start - 1] === ':' ? ' ' : '';
+    const replacement = blank + title;
+    return { changed: true, text: splice(text, valueSpan, replacement), span: valueSpan, replacement };
+  }
+
+  const drawerEnd = doc.fileDrawer ? doc.fileDrawer.span.end : null;
+  const eol = lineEndingNear(text, drawerEnd ?? doc.bomLength);
+  let start = doc.bomLength;
+  let replacement = `#+title: ${title}${eol}`;
+  if (drawerEnd !== null) {
+    const newline = text.indexOf('\n', drawerEnd);
+    if (newline === -1) {
+      // The drawer ends the file without a line ending.
+      start = text.length;
+      replacement = eol + replacement;
+    } else {
+      start = newline + 1;
+    }
+  }
+  const span = { start, end: start };
+  return { changed: true, text: splice(text, span, replacement), span, replacement };
+}
+
 function splice(text: string, span: Span, replacement: string): string {
   return text.slice(0, span.start) + replacement + text.slice(span.end);
 }
