@@ -1,0 +1,44 @@
+name: Native Android
+
+on:
+  push:
+    paths:
+      - 'modules/roamlet-fs/**'
+      - '.github/workflows/native-android.yml'
+      - 'package-lock.json'
+      - 'app.json'
+  pull_request:
+    paths:
+      - 'modules/roamlet-fs/**'
+      - '.github/workflows/native-android.yml'
+      - 'package-lock.json'
+      - 'app.json'
+  workflow_dispatch:
+
+jobs:
+  module:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - run: npx expo prebuild --platform android --no-install
+      - name: Compile the module and run its tests
+        working-directory: android
+        run: ./gradlew :roamlet-fs:compileDebugKotlin :roamlet-fs:testDebugUnitTest --no-daemon --stacktrace
+      - name: Keep the test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: roamlet-fs-test-report
+          path: modules/roamlet-fs/android/build/reports/tests/
+          if-no-files-found: warn

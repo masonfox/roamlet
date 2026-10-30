@@ -1,0 +1,31 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.roamlet'
+version = '0.1.0'
+
+android {
+  namespace "com.roamlet.fs"
+  defaultConfig {
+    versionCode 1
+    versionName "0.1.0"
+  }
+  testOptions {
+    unitTests.includeAndroidResources = true
+    unitTests.all {
+      testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+      }
+    }
+  }
+}
+
+dependencies {
+  implementation 'com.facebook.react:react-android'
+
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'org.robolectric:robolectric:4.16'
+}
