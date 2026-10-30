@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Roamlet",
+    "slug": "roamlet",
+    "version": "0.1.0",
+    "orientation": "default",
+    "scheme": "roamlet",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.roamlet.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.roamlet.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-splash-screen",
+      "expo-status-bar",
+      "expo-sqlite",
+      "expo-sharing",
+      [
+        "expo-file-system",
+        {
+          "supportsOpeningDocumentsInPlace": true,
+          "enableFileSharing": true
+        }
+      ]
+    ]
+  }
+}
