@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "difference": "link 00000000-0000-4000-8000-000000000040 -> 00000000-0000-4000-8000-000000000001 oracle=0 scanner=1",
+    "reason": "Mixed line endings. Emacs decodes such a file as Unix, so a CR stays at the end of every CRLF line and Org-roam misses the file drawer, which loses this link's source. Roamlet accepts both line endings on every line."
+  },
+  {
+    "difference": "link 00000000-0000-4000-8000-000000000041\r -> 00000000-0000-4000-8000-000000000002 oracle=1 scanner=0",
+    "reason": "Mixed line endings. Emacs keeps the CR, so Org-roam stores the source ID with a trailing CR, and the CR breaks the source block around this link, which then counts. Roamlet accepts both line endings on every line, so the block holds and the link stays verbatim."
+  },
+  {
+    "difference": "link 00000000-0000-4000-8000-000000000041\r -> 00000000-0000-4000-8000-000000000003 oracle=1 scanner=0",
+    "reason": "Mixed line endings. Emacs keeps the CR, so Org-roam stores the source ID with a trailing CR. The scanner's side of the same link is the next entry."
+  },
+  {
+    "difference": "link 00000000-0000-4000-8000-000000000041 -> 00000000-0000-4000-8000-000000000003 oracle=0 scanner=1",
+    "reason": "Mixed line endings. The same link as the previous entry, with the clean source ID that Roamlet reads."
+  },
+  {
+    "difference": "link 00000000-0000-4000-8000-000000000056 ->  oracle=1 scanner=0",
+    "reason": "`[[id:]]` has no target. Org-roam stores a link to an empty ID, which can never resolve. Roamlet records no link, since no node can have an empty ID."
+  },
+  {
+    "difference": "node-only-in-oracle line-endings-mixed.org 00000000-0000-4000-8000-000000000041\r \"Heading :tag:\\r\"",
+    "reason": "Mixed line endings. Org-roam stores the ID and title with a trailing CR, and with the tag still in the title. Roamlet's side of this node is the matching node-only-in-scanner entry."
+  },
+  {
+    "difference": "node-only-in-scanner comments-before-drawer.org 00000000-0000-4000-8000-000000000025 \"Comments first\"",
+    "reason": "A blank line before the file drawer. Org-roam 2.3.1 does not see the node, as drawer-after-blank.org isolates. The File-level node recognition spec requires it (blank lines and comments may precede the drawer), so Roamlet follows the spec. The app lists a node that Emacs does not; nothing in the file changes."
+  },
+  {
+    "difference": "node-only-in-scanner drawer-after-blank.org 00000000-0000-4000-8000-000000000096 \"Blank line first\"",
+    "reason": "A blank line before the file drawer, in isolation. A comment line alone is accepted by both (drawer-after-comment.org). The File-level node recognition spec requires recognizing this, so Roamlet follows the spec."
+  },
+  {
+    "difference": "node-only-in-scanner duplicate-ids-a.org 00000000-0000-4000-8000-000000000052 \"Duplicate A\"",
+    "reason": "Duplicate ID across files. Org-roam's node table holds one row per ID, so it keeps the holder that syncs first. Roamlet keeps every holder as data and reports them (design.md, Decision 5)."
+  },
+  {
+    "difference": "node-only-in-scanner duplicate-ids-a.org 00000000-0000-4000-8000-000000000053 \"Twice in one file again\"",
+    "reason": "Duplicate ID within a file. Org-roam keeps the first heading. Roamlet keeps both as data and reports them (design.md, Decision 5)."
+  },
+  {
+    "difference": "node-only-in-scanner line-endings-mixed.org 00000000-0000-4000-8000-000000000040 \"Line endings\"",
+    "reason": "Mixed line endings. The CR left on `:PROPERTIES:` hides the file drawer from Org-roam. Roamlet accepts both line endings on every line."
+  },
+  {
+    "difference": "node-only-in-scanner line-endings-mixed.org 00000000-0000-4000-8000-000000000041 \"Heading\"",
+    "reason": "Mixed line endings. Roamlet's side of the node that Org-roam stores with a trailing CR in its ID and title."
+  },
+  {
+    "difference": "node-only-in-scanner note (Laptop's conflicted copy 2026-01-15).org 00000000-0000-4000-8000-000000000054 \"Note in conflict\"",
+    "reason": "Dropbox conflict copy with a duplicate ID. Org-roam keeps one holder per ID, in sync order. Roamlet treats conflict copies as ordinary files whose duplicates are data, reported and never changed (design.md, Decision 5)."
+  },
+  {
+    "difference": "node-only-in-scanner note (Laptop's conflicted copy 2026-01-15).org 00000000-0000-4000-8000-000000000055 \"Heading in conflict\"",
+    "reason": "Dropbox conflict copy with a duplicate ID, as above, for the heading node."
+  },
+  {
+    "difference": "node-only-in-scanner note.org 00000000-0000-4000-8000-000000000054 \"Note in conflict\"",
+    "reason": "The original of a sync conflict. Org-roam's single row for this ID went to the Syncthing copy, because of sync order. Roamlet keeps every holder as data, and its lookup winner is the lowest path (design.md, Decision 5), so the two tools can pick different holders."
+  },
+  {
+    "difference": "node-only-in-scanner note.org 00000000-0000-4000-8000-000000000055 \"Heading in conflict\"",
+    "reason": "The original of a sync conflict, as above, for the heading node."
+  },
+  {
+    "difference": "node-title 20260101120000-foo.org 00000000-0000-4000-8000-000000000024 oracle=\"\" scanner=\"20260101120000-foo\"",
+    "reason": "No title keyword. Org-roam 2.3.1 stores an empty title. The File metadata extraction spec requires the file name, which gives the note a usable name."
+  },
+  {
+    "difference": "node-title multiple-titles.org 00000000-0000-4000-8000-000000000093 oracle=\"First title Second title\" scanner=\"First title\"",
+    "reason": "Two title keywords. Org-roam joins them. The File metadata extraction spec requires the first, which is also the one value that a title edit replaces."
+  }
+]
