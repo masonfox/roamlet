@@ -47,6 +47,28 @@ jobs:
           name: oracle
           path: ${{ runner.temp }}/oracle.json
       - name: Compare the oracle with the scanner
-        run: npx jest --selectProjects core --testPathPatterns 'test/core/conformance'
+        run: npx jest --selectProjects core --testPathPatterns 'test/core/conformance(-compare)?\.test'
         env:
           ORACLE_JSON: ${{ runner.temp }}/oracle.json
+      - name: Apply scripted edits to copies of the fixtures
+        run: npx jest --selectProjects core --testPathPatterns 'test/emacs/write-round-trip'
+        env:
+          ROUND_TRIP_DIR: ${{ runner.temp }}/round-trip
+      - name: Sync the edited copies with Org-roam
+        run: |
+          deps="$RUNNER_TEMP/emacs/deps"
+          for scenario in "$RUNNER_TEMP"/round-trip/*/; do
+            emacs --batch -Q \
+              -L "$deps/org-roam" -L "$deps/emacsql" -L "$deps/magit/lisp" -L "$deps/compat" \
+              -L "$deps/dash" -L "$deps/llama" -L "$deps/cond-let" \
+              -l test/emacs/oracle.el "$scenario" "${scenario%/}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: round-trip
+          path: ${{ runner.temp }}/round-trip
+      - name: Check the round trip
+        run: npx jest --selectProjects core --testPathPatterns 'test/core/conformance-round-trip'
+        env:
+          ORACLE_JSON: ${{ runner.temp }}/oracle.json
+          ROUND_TRIP_DIR: ${{ runner.temp }}/round-trip

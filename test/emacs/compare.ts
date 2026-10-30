@@ -25,6 +25,11 @@ export interface Results {
 /** The JSON that `oracle.el` writes. */
 export interface OracleDump extends Results {
   versions: Record<string, string>;
+  nodes: (OracleNode & { slug: string })[];
+  /** From Org-roam's own backlink lookup, for each node. */
+  backlinks: OracleLink[];
+  /** The description Org parses for each `id:` link that has one. */
+  descriptions: { file: string; dest: string; description: string }[];
 }
 
 /** A known difference. `difference` is compared exactly, so a changed result needs a new entry. */
