@@ -211,7 +211,7 @@ search USING fts5(title, body, tokenize="unicode61 remove_diacritics 2")
 ```
 
 - **Folder tree:** Derived from `files.path` with an index on the parent directory. It shows only folders containing notes, and needs no listing while browsing.
-- **Duplicate IDs** are data, not constraint violations. Lookup picks a deterministic winner (lowest path), and duplicates are a query. This matters more now, because sync tools create conflict copies ending in `.org`, such as Syncthing's `.sync-conflict-` files and Dropbox's "conflicted copy" files.
+- **Duplicate IDs** are data, not constraint violations. Lookup picks a deterministic winner, and duplicates are a query. The winner is the lowest path among files whose names don't look like a sync tool's conflict copy, falling back to the lowest path of all if only copies remain. This matters because sync tools create conflict copies ending in `.org`, such as Syncthing's `.sync-conflict-` files and Dropbox's "conflicted copy" files, and plain lowest path would let Dropbox's copy beat the original, since a space sorts before a dot. Recognition goes by file name, so a copy named some other way, such as in a localized Dropbox, still falls back to lowest path.
 - **Search units:** Each node gets one `search` row with the text owned by it, and text with no enclosing node gets a file-level row. Metadata lines are excluded.
 - **Search queries** use FTS5 prefix matching, with title weighted higher through `bm25`. `unicode61` doesn't segment CJK, so queries containing such characters fall back to `LIKE` over stored text. That's a linear scan, which is acceptable at MVP scale.
 - **Unresolved links** are simply links with no matching node, computed at query time, so they resolve on their own when a target appears.
@@ -350,6 +350,4 @@ This is a first release, so there's no data migration. Roamlet doesn't change an
 
 ## Open Questions
 
-- **Project license:** Not stated in the brief. Decision 9 keeps every option open, and the task list assumes MIT, which the maintainer should confirm before the repository is published.
-- **Bundle identifier and app name registration:** Needed for EAS and doesn't affect the design. Assumed to be `com.roamlet.app` until confirmed.
 - **Budget numbers in A8:** These are initial targets without real-device data and may be adjusted after Milestone 0.

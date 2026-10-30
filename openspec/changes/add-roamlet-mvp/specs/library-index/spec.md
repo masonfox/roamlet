@@ -96,7 +96,7 @@ The system SHALL detect duplicate IDs, unresolved links, files without IDs, inva
 
 #### Scenario: Sync conflict copy of a note
 - **WHEN** a sync tool creates a conflict copy ending in `.org`, duplicating a note's IDs
-- **THEN** both files stay accessible, the duplicate is reported, and neither file is changed
+- **THEN** both files stay accessible, the duplicate is reported, links to that ID open the original, and neither file is changed
 
 #### Scenario: Unreadable file
 - **WHEN** a file cannot be read during indexing

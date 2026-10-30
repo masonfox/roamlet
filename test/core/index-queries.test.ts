@@ -276,6 +276,31 @@ describe('index queries', () => {
       expect(await index.resolveLink(ID_A)).toMatchObject({ filePath: 'm.org' });
     });
 
+    it('a sync conflict copy never beats the original, and only the file name counts', async () => {
+      const dropbox = 'a (Laptop conflicted copy 2026-01-15).org';
+      await index.reconcile(
+        new MemoryFileStore({
+          [dropbox]: note(ID_A, 'Copy'),
+          'z.org': note(ID_A, 'Original'),
+          'conflicted copy (x)/b.org': note(ID_B, 'In an oddly named folder'),
+          'c.org': note(ID_B, 'Later path'),
+        }),
+      );
+
+      expect(await index.resolveLink(ID_A)).toMatchObject({ filePath: 'z.org' });
+      expect(await index.resolveLink(ID_B)).toMatchObject({ filePath: 'c.org' });
+    });
+
+    it('with only sync conflict copies left, the lowest path wins', async () => {
+      const first = 'n.sync-conflict-20260115-093000-ABCDEFG.org';
+      const second = 'n.sync-conflict-20260116-093000-ABCDEFG.org';
+      await index.reconcile(
+        new MemoryFileStore({ [second]: note(ID_A, 'Second'), [first]: note(ID_A, 'First') }),
+      );
+
+      expect(await index.resolveLink(ID_A)).toMatchObject({ filePath: first });
+    });
+
     it('a duplicate within one file resolves to the earlier one', async () => {
       await index.reconcile(
         new MemoryFileStore({ 'dup.org': fixture('duplicate-ids-a.org') }),
@@ -297,12 +322,13 @@ describe('index queries', () => {
       await index.reconcile(store);
 
       const duplicate = (await index.problems()).duplicateIds.find((dup) => dup.id === FIXTURE_NOTE_ID);
-      // Paths compare by bytes, and ' ' sorts before '.', so Dropbox's copy is the winner here.
+      // Dropbox's copy has the lowest path, since ' ' sorts before '.', but the original still wins.
       expect(duplicate?.nodes.map((node) => node.filePath)).toEqual([
-        FIXTURE_DROPBOX_COPY,
         'note.org',
+        FIXTURE_DROPBOX_COPY,
         FIXTURE_SYNCTHING_COPY,
       ]);
+      expect(await index.resolveLink(FIXTURE_NOTE_ID)).toMatchObject({ filePath: 'note.org' });
       expect((await index.listFolder('')).files.map((file) => file.path).sort()).toEqual(
         Object.keys(files).sort(),
       );

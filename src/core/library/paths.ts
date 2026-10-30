@@ -4,6 +4,7 @@
 import type { FileEntry } from '../ports';
 
 const CONFLICT_COPY_NAME = /\.org\.conflict-\d{14}(?:-\d+)?$/;
+const SYNC_CONFLICT_NAME = /\.sync-conflict-\d{8}-\d{6}-[^/]*\.org$| \([^()]*conflicted copy[^()]*\)\.org$/i;
 
 function isHidden(path: string): boolean {
   return path.split('/').some((part) => part.startsWith('.'));
@@ -35,6 +36,14 @@ export function isNotePath(path: string): boolean {
 /** A copy made by `saveConflictCopy`. Its name doesn't end in `.org`, so it is never a note. */
 export function isConflictCopyPath(path: string): boolean {
   return !isHidden(path) && CONFLICT_COPY_NAME.test(baseName(path));
+}
+
+/**
+ * A `.org` copy a sync tool made of a conflicting note, going by Syncthing's and Dropbox's naming.
+ * Unlike a `saveConflictCopy` file, it is a note, and it carries the original's IDs.
+ */
+export function isSyncConflictNotePath(path: string): boolean {
+  return SYNC_CONFLICT_NAME.test(baseName(path));
 }
 
 /** The conflict copies in a listing, for diagnostics. */

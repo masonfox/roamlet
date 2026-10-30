@@ -57,7 +57,7 @@
   },
   {
     "difference": "node-only-in-scanner note.org 00000000-0000-4000-8000-000000000054 \"Note in conflict\"",
-    "reason": "The original of a sync conflict. Org-roam's single row for this ID went to the Syncthing copy, because of sync order. Roamlet keeps every holder as data, and its lookup winner is the lowest path (design.md, Decision 5), so the two tools can pick different holders."
+    "reason": "The original of a sync conflict. Org-roam's single row for this ID went to the Syncthing copy, because of sync order. Roamlet keeps every holder as data, and its lookup winner is the original rather than a sync tool's copy (design.md, Decision 5), so the two tools can pick different holders."
   },
   {
     "difference": "node-only-in-scanner note.org 00000000-0000-4000-8000-000000000055 \"Heading in conflict\"",

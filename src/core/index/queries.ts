@@ -1,3 +1,4 @@
+import { isSyncConflictNotePath } from '../library/paths';
 import type { SqlExecutor } from '../ports';
 import { conflictCopyNotePath } from './conflict-copies';
 import type { FileStatus } from './reconcile';
@@ -188,23 +189,26 @@ export async function nodesInFile(db: SqlExecutor, path: string): Promise<Indexe
   return rows.map(toNode);
 }
 
-/** Every node with this ID, the one links resolve to first: lowest path, then earliest in it. */
+/**
+ * Every node with this ID, the one links resolve to first: a sync tool's conflict copy never comes
+ * ahead of the original, and otherwise the lowest path, then earliest in it.
+ */
 async function nodesWithId(db: SqlExecutor, id: string): Promise<IndexedNode[]> {
   const rows = await db.all<NodeRow>(
     `SELECT ${NODE_COLUMNS} FROM nodes n WHERE n.id = ? ORDER BY n.file_path, n.start_offset`,
     [id],
   );
-  return rows.map(toNode);
+  const nodes = rows.map(toNode);
+  return [
+    ...nodes.filter((node) => !isSyncConflictNotePath(node.filePath)),
+    ...nodes.filter((node) => isSyncConflictNotePath(node.filePath)),
+  ];
 }
 
 /** The node a link to this ID opens, or null if the link is unresolved. */
 export async function resolveLink(db: SqlExecutor, id: string): Promise<IndexedNode | null> {
-  const row = await db.get<NodeRow>(
-    `SELECT ${NODE_COLUMNS} FROM nodes n WHERE n.id = ?
-     ORDER BY n.file_path, n.start_offset LIMIT 1`,
-    [id],
-  );
-  return row && toNode(row);
+  const [winner] = await nodesWithId(db, id);
+  return winner ?? null;
 }
 
 async function backlinksWhere(

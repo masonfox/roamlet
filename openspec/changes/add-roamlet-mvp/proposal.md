@@ -61,5 +61,5 @@ None. There are no existing specs.
 - **Dependencies:** Expo SDK 58 (`expo-router`, `expo-sqlite`, `expo-file-system` for internal app data only, `expo-sharing`, `expo-crypto`) and `fflate` for export archives. No Org parser ships in the app.
 - **Build:** Requires development builds rather than Expo Go, because of the native module. iOS builds need EAS or a Mac, plus an Apple Developer account for device testing. From a Windows machine, every Swift change goes through EAS Build, which slows that part of development.
 - **Testing:** Real-device runs on each supported provider, because provider behavior can't be exercised in Node. CI adds an Emacs and Org-roam job as a test-only conformance check. Nothing from Emacs ships in the app, and the app has no runtime dependency on it.
-- **Licensing:** The project's license is not yet chosen. Keeping GPL code out of the app (see `design.md`) leaves that choice open and avoids a known conflict with App Store distribution.
+- **Licensing:** The project is MIT licensed. Keeping GPL code out of the app (see `design.md`) keeps that possible and avoids a known conflict with App Store distribution.
 - **Systems:** No backend, accounts, telemetry, or network dependency of Roamlet's own. Cloud providers are whatever the user already uses.
