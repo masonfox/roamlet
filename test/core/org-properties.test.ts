@@ -173,7 +173,9 @@ describe('scanner properties', () => {
           }
         }
         for (const link of doc.links) {
-          expect(text.slice(link.span.start, link.span.end)).toContain(link.target.replace(/\\/g, ''));
+          // Bracket links unescape their targets and other forms don't, so compare without backslashes.
+          const written = text.slice(link.span.start, link.span.end).replace(/\\/g, '');
+          expect(written).toContain(link.target.replace(/\\/g, ''));
           if (link.source !== null) expect(doc.nodes[link.source]).toBeDefined();
         }
       }),
