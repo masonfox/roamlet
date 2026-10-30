@@ -13,6 +13,10 @@ const TEST_BYTES = Uint8Array.from([
   0x0a,
 ]);
 
+function now(): number {
+  return Date.now();
+}
+
 function sameBytes(a: Uint8Array, b: Uint8Array): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index]);
 }
@@ -33,39 +37,39 @@ export default function Spike() {
   };
 
   const list = async (target: LibraryRoot) => {
-    const started = Date.now();
+    const started = now();
     const result = await RoamletFs.list(target);
     setEntries(result.entries);
     say(
       `list: ${result.entries.length} entries, ${result.failures.length} failures, ` +
-        `${Date.now() - started} ms ${JSON.stringify(result.failures)}`
+        `${now() - started} ms ${JSON.stringify(result.failures)}`
     );
   };
 
   const pick = () =>
     run('pick', async () => {
-    const result = await RoamletFs.pickFolder();
-    say(`pick: ${JSON.stringify(result)}`);
-    if (result.status === 'picked') {
-      setRoot(result.root);
-      await list(result.root);
-    }
-  });
+      const result = await RoamletFs.pickFolder();
+      say(`pick: ${JSON.stringify(result)}`);
+      if (result.status === 'picked') {
+        setRoot(result.root);
+        await list(result.root);
+      }
+    });
 
   const restoreAndRecover = () =>
     run('restore', async () => {
-    say(`restore: ${JSON.stringify(await RoamletFs.restore(root))}`);
-    say(`recover: ${JSON.stringify(await RoamletFs.recover(root))}`);
-    await list(root);
-  });
+      say(`restore: ${JSON.stringify(await RoamletFs.restore(root))}`);
+      say(`recover: ${JSON.stringify(await RoamletFs.recover(root))}`);
+      await list(root);
+    });
 
   const create = () =>
     run('create', async () => {
-    const path = `spike-${Date.now()}.org`;
-    say(`create ${path}: ${JSON.stringify(await RoamletFs.createExclusive(root, path, TEST_BYTES))}`);
-    say(`create again: ${JSON.stringify(await RoamletFs.createExclusive(root, path, TEST_BYTES))}`);
-    await list(root);
-  });
+      const path = `spike-${now()}.org`;
+      say(`create ${path}: ${JSON.stringify(await RoamletFs.createExclusive(root, path, TEST_BYTES))}`);
+      say(`create again: ${JSON.stringify(await RoamletFs.createExclusive(root, path, TEST_BYTES))}`);
+      await list(root);
+    });
 
   const replace = (entry: FileEntry) =>
     run('replace', async () => {
