@@ -18,7 +18,7 @@ on:
 
 jobs:
   core-tests:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
           xcodebuild test -scheme RoamletFsCore -destination "platform=iOS Simulator,id=$udid"
 
   app-build:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4

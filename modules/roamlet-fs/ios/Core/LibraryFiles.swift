@@ -319,6 +319,10 @@ struct LibraryFiles {
       do {
         let url = try resolve(path)
         if LibraryFiles.placeholder(for: url) == nil {
+          // Asking a missing file for its resource values doesn't throw, it just returns nothing.
+          guard FileManager.default.fileExists(atPath: url.path) else {
+            throw FileFailure(.notFound, path)
+          }
           let values = try url.resourceValues(forKeys: [.isUbiquitousItemKey])
           if values.isUbiquitousItem != true {
             continue
