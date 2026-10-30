@@ -3,6 +3,7 @@ package com.roamlet.fs
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document
 import java.io.FileNotFoundException
@@ -42,9 +43,7 @@ internal class SafBackend(
     val uri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, dir.ref)
     repeat(LOADING_RETRIES + 1) { attempt ->
       if (attempt > 0) sleep(LOADING_WAIT_MS)
-      val cursor = resolver.query(uri, COLUMNS, null, null, null)
-        ?: throw IOException("provider returned no cursor for ${dir.name}")
-      cursor.use {
+      queryCursor(uri).use {
         val extras = it.extras
         extras?.getString(DocumentsContract.EXTRA_ERROR)?.let { error -> throw IOException(error) }
         if (extras?.getBoolean(DocumentsContract.EXTRA_LOADING) != true) {
@@ -87,13 +86,18 @@ internal class SafBackend(
     }
   }
 
-  private fun query(uri: Uri): Doc {
-    val cursor = resolver.query(uri, COLUMNS, null, null, null)
-      ?: throw IOException("provider returned no cursor")
-    return cursor.use {
-      if (!it.moveToFirst()) throw FileNotFoundException("no document at $uri")
-      it.toDoc()
+  private fun query(uri: Uri): Doc = queryCursor(uri).use {
+    if (!it.moveToFirst()) throw FileNotFoundException("no document at $uri")
+    it.toDoc()
+  }
+
+  private fun queryCursor(uri: Uri): Cursor {
+    val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      resolver.query(uri, COLUMNS, null, null)
+    } else {
+      resolver.query(uri, COLUMNS, null, null, null)
     }
+    return cursor ?: throw IOException("provider returned no cursor for $uri")
   }
 }
 
