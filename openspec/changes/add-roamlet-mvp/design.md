@@ -171,6 +171,8 @@ A crash before step 3 leaves the original untouched, so no journal is needed. Le
 
 This fallback has a window in which a partial file exists at the note's path, and a sync tool could pick that up. It's only used where no better option exists, and the provider matrix shows which providers need it.
 
+**As implemented on Android:** The journal is written before the temp document, so a crash can't orphan a temp file. A rename probe on the temp falls back to the in-place path when a provider alters renamed names. New files also go through a journaled temp. If a provider alters only `.org` renames, it passes the probe and recovery then fails with the original kept as `.roamlet-<id>.old`, so the content survives but the note needs manual repair. The provider matrix shows whether this occurs.
+
 **Recovery** runs for the active library before it's used, and waits if the folder is unavailable. For each journal, it finishes or undoes the swap so that the target holds verified old or new content, then removes temp files, `.old` files, and the journal.
 
 **After a save:** The index is updated once the file is in place. If the app dies in between, the next reconcile repairs the index, because the file is what counts. A stale result, such as a sync tool changing the file during editing, leads to the reload or conflict-copy choice. Conflict copies use `createExclusive` with a non-`.org` name.
