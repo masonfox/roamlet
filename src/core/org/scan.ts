@@ -486,7 +486,7 @@ function nodeIdOf(properties: OrgProperty[]): string | null {
   if (!id || id.value === '') return null;
   const exclude = properties.find((property) => property.key.toUpperCase() === 'ROAM_EXCLUDE');
   // Org reads only the literal `nil` as unset, so an empty value still excludes.
-  return exclude && exclude.value !== 'nil' ? null : id.value;
+  return id.value;
 }
 
 /**
