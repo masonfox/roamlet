@@ -128,6 +128,14 @@ export interface SqlDriver extends SqlExecutor {
   close(): Promise<void>;
 }
 
+/** Where named databases live. Disposable data only: `delete` is how the index recovers. */
+export interface SqlDatabaseHost {
+  /** Opens a database, creating it if missing. Rejects when the file is not a usable database. */
+  open(name: string): Promise<SqlDriver>;
+  /** Deletes a database and its side files. Fine if there is none; it must be closed first. */
+  delete(name: string): Promise<void>;
+}
+
 export interface IdGenerator {
   /** A new lowercase UUID. */
   newId(): string;
