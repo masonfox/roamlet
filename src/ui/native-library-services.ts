@@ -1,17 +1,8 @@
-import type {
-  FileStore,
-  FileStoreFailure,
-  LibraryAccess,
-  LibraryRecordStore,
-  LibraryRoot,
-} from '../core/ports';
+import { failureOf, roamletFsAccess } from '../adapters/roamlet-fs-file-store';
+import type { LibraryRecordStore } from '../core/ports';
 import type { LibraryServices } from './library-controller';
 
 const RECORD_FILE_NAME = 'active-library.json';
-
-function failureOf(error: unknown): FileStoreFailure {
-  return { kind: 'provider_error', message: error instanceof Error ? error.message : String(error) };
-}
 
 /**
  * The real services. Native modules load only when this runs, because merely importing `roamlet-fs`
@@ -25,22 +16,6 @@ export async function loadNativeLibraryServices(): Promise<LibraryServices> {
       import('expo-crypto'),
       import('../adapters/expo-sql-driver'),
     ]);
-
-  const storeOver = (root: LibraryRoot): FileStore => ({
-    list: () => RoamletFs.list(root),
-    readBytes: (path) => RoamletFs.readBytes(root, path),
-    digest: (path) => RoamletFs.digest(root, path),
-    createExclusive: (path, bytes) => RoamletFs.createExclusive(root, path, bytes),
-    replaceFile: (path, bytes, hash) => RoamletFs.replaceFile(root, path, bytes, hash),
-    requestDownload: (paths) => RoamletFs.requestDownload(root, paths),
-  });
-
-  const access: LibraryAccess = {
-    pickFolder: () => RoamletFs.pickFolder(),
-    restore: (root) => RoamletFs.restore(root),
-    recover: (root) => RoamletFs.recover(root),
-    openStore: storeOver,
-  };
 
   // Decision 3. The path has spaces on iOS (`Application Support`), so it needs encoding as a URI.
   const recordFile = new File(
@@ -66,7 +41,7 @@ export async function loadNativeLibraryServices(): Promise<LibraryServices> {
   };
 
   return {
-    access,
+    access: roamletFsAccess(RoamletFs),
     records,
     databases: new ExpoSqlDatabaseHost(Paths.cache.uri),
     ids: { newId: () => randomUUID().toLowerCase() },
