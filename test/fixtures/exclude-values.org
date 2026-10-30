@@ -1,0 +1,42 @@
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000060
+:END:
+#+title: Exclusion values
+
+* Excluded parent
+:PROPERTIES:
+:ID:           00000000-0000-4000-8000-000000000061
+:ROAM_EXCLUDE: t
+:END:
+** Child without the property
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000062
+:END:
+*** Grandchild without the property
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000063
+:END:
+Owned by the grandchild: [[id:00000000-0000-4000-8000-000000000001]].
+* Excluded without an ID of its own
+:PROPERTIES:
+:ROAM_EXCLUDE: t
+:END:
+** Child of a heading with no ID
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000064
+:END:
+* Empty value
+:PROPERTIES:
+:ID:           00000000-0000-4000-8000-000000000065
+:ROAM_EXCLUDE:
+:END:
+* Any other value
+:PROPERTIES:
+:ID:           00000000-0000-4000-8000-000000000066
+:ROAM_EXCLUDE: false
+:END:
+* Lowercase property name
+:PROPERTIES:
+:ID:           00000000-0000-4000-8000-000000000067
+:roam_exclude: t
+:END:

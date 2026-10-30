@@ -25,6 +25,9 @@ Org treats a line starting with stars and a space as a heading even inside a blo
 | `heading-nodes-no-file-id.org` | Heading nodes in a file with no file-level node |
 | `excluded.org` | `ROAM_EXCLUDE` on a heading, ownership falling through it, a child with its own ID, a `nil` value |
 | `excluded-file.org` | `ROAM_EXCLUDE` in the file drawer, with a heading node inside |
+| `exclude-values.org` | Whether descendants inherit `ROAM_EXCLUDE`, and empty, `false`, and lowercase-name forms |
+| `link-contexts.org` | Plain and angle `id:` links in drawers, keywords, lists, tables, quotes, captions, and titles; a heading with every title part |
+| `multiple-titles.org` | Two `#+title` and two `#+filetags` lines in a file-level node |
 | `line-endings-lf.org` | Baseline for the line-ending group |
 | `line-endings-crlf.org` | The same content with CRLF on every line |
 | `line-endings-mixed.org` | The same content with alternating CRLF and LF |

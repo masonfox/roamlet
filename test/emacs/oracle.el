@@ -1,0 +1,66 @@
+;;; oracle.el --- Dump Org-roam's view of a directory as JSON  -*- lexical-binding: t; -*-
+
+;; Usage: emacs --batch -Q -L <deps>... -l oracle.el <directory> <output.json>
+;;
+;; Runs only in CI, as a separate program (design.md, Decisions 8 and 9). The database lives in a
+;; temporary directory, so nothing is written to the directory being synced.
+
+;;; Code:
+
+(require 'json)
+(require 'org)
+(require 'org-roam)
+
+(defun oracle--sorted (values)
+  "Return VALUES, a list of strings, as a sorted vector."
+  (vconcat (sort (copy-sequence values) #'string<)))
+
+(defun oracle--dump (root)
+  "Return what Org-roam's database holds for ROOT, with paths relative to it."
+  (let ((tags (make-hash-table :test #'equal)))
+    (pcase-dolist (`(,node ,tag) (org-roam-db-query [:select [node-id tag] :from tags]))
+      (push tag (gethash node tags)))
+    `((versions . ((emacs . ,emacs-version)
+                   (org . ,(org-version))
+                   (org-roam . ,(or (ignore-errors (org-roam-version)) "unknown"))))
+      (files . ,(oracle--sorted
+                 (mapcar (lambda (row) (file-relative-name (car row) root))
+                         (org-roam-db-query [:select file :from files]))))
+      (nodes . ,(vconcat
+                 (mapcar (pcase-lambda (`(,id ,file ,level ,pos ,title))
+                           `((id . ,id)
+                             (file . ,(file-relative-name file root))
+                             (level . ,level)
+                             (pos . ,pos)
+                             (title . ,title)
+                             (tags . ,(oracle--sorted (gethash id tags)))))
+                         (org-roam-db-query
+                          [:select [id file level pos title] :from nodes
+                           :order-by [(asc file) (asc pos)]]))))
+      (links . ,(vconcat
+                 (mapcar (pcase-lambda (`(,source ,dest))
+                           `((source . ,source) (dest . ,dest)))
+                         (org-roam-db-query
+                          [:select [source dest] :from links :where (= type "id")
+                           :order-by [(asc source) (asc pos)]])))))))
+
+(defun oracle-run (directory output)
+  "Sync DIRECTORY with Org-roam, and write its nodes and links to OUTPUT as JSON."
+  (let* ((root (file-name-as-directory (file-truename directory)))
+         (scratch (make-temp-file "oracle" t))
+         (org-roam-directory root)
+         (org-roam-db-location (expand-file-name "org-roam.db" scratch))
+         (org-id-locations-file (expand-file-name "org-id-locations" scratch)))
+    ;; A duplicate ID goes to whichever file syncs first, so that order must not vary between runs.
+    (advice-add 'org-roam-list-files :filter-return
+                (lambda (files) (sort files #'string<)))
+    (org-roam-db-sync)
+    (let ((coding-system-for-write 'utf-8-unix))
+      (with-temp-file output
+        (insert (json-serialize (oracle--dump root)))))
+    (org-roam-db--close-all)
+    (delete-directory scratch t)))
+
+(oracle-run (pop command-line-args-left) (pop command-line-args-left))
+
+;;; oracle.el ends here

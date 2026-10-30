@@ -1,0 +1,52 @@
+name: Conformance
+
+on:
+  push:
+
+jobs:
+  org-roam:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # v8.0
+      - uses: purcell/setup-emacs@bdc64dc730ae1fcba200bfd52cb1b4cf6159cbe5
+        with:
+          version: '30.1'
+      - name: Fetch Org-roam and its dependencies at pinned commits
+        run: |
+          fetch() {
+            git init --quiet "deps/$1"
+            git -C "deps/$1" fetch --quiet --depth 1 "https://github.com/$2.git" "$3"
+            git -C "deps/$1" checkout --quiet FETCH_HEAD
+          }
+          mkdir -p "$RUNNER_TEMP/emacs"
+          cd "$RUNNER_TEMP/emacs"
+          fetch org-roam org-roam/org-roam 7ce95a286ba7d0383f2ab16ca4cdbf79901921ff # v2.3.1
+          fetch emacsql magit/emacsql 7a4c607912c8fdd1fca4def4915d68f43b12d4da # v4.4.2
+          fetch magit magit/magit b828afbb4b45641998fb6483a08effb1efb214e1 # v4.4.2
+          fetch compat emacs-compat/compat 7179960b7c82a7cca6bac60d79dd7fe09ae390a0 # 30.1.0.0
+          fetch dash magnars/dash.el fcb5d831fc08a43f984242c7509870f30983c27c # 2.20.0
+          fetch llama tarsius/llama 6850d0c91b629da14fdff2300c222289d1a0029a # v1.0.6
+          fetch cond-let tarsius/cond-let 09292a77001434f59ab55c775dec2b98cb18d028 # v1.1.5
+      - name: Sync the fixtures with Org-roam
+        run: |
+          deps="$RUNNER_TEMP/emacs/deps"
+          emacs --batch -Q \
+            -L "$deps/org-roam" -L "$deps/emacsql" -L "$deps/magit/lisp" -L "$deps/compat" \
+            -L "$deps/dash" -L "$deps/llama" -L "$deps/cond-let" \
+            -l test/emacs/oracle.el test/fixtures "$RUNNER_TEMP/oracle.json"
+      - name: Check that the sync left the fixtures untouched
+        run: git diff --exit-code -- test/fixtures
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oracle
+          path: ${{ runner.temp }}/oracle.json
+      - name: Compare the oracle with the scanner
+        run: npx jest --selectProjects core --testPathPatterns 'test/core/conformance'
+        env:
+          ORACLE_JSON: ${{ runner.temp }}/oracle.json
