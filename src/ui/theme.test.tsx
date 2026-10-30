@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react-native';
 import { Appearance, DeviceEventEmitter, StyleSheet, Text, useColorScheme } from 'react-native';
 
 import CaptureScreen from '../../app/(tabs)/capture';
+import { LibraryContext, type LibraryContextValue } from './library-context';
 import { darkTheme, lightTheme, useTheme, type Theme } from './theme';
 
 jest.mock('react-native/Libraries/Utilities/NativeAppearance', () => ({
@@ -81,11 +82,17 @@ describe('useTheme', () => {
 
   it('recolors a mounted screen without a restart', async () => {
     await systemAppearance('light');
-    await render(<CaptureScreen />);
-    const color = () => StyleSheet.flatten(screen.getByText('Capture').props.style).color;
-    expect(color()).toBe(lightTheme.colors.textMuted);
+    // Still starting, which is all this screen needs to render.
+    const library = { state: { status: 'starting' } } as LibraryContextValue;
+    await render(
+      <LibraryContext.Provider value={library}>
+        <CaptureScreen />
+      </LibraryContext.Provider>,
+    );
+    const color = () => StyleSheet.flatten(screen.getByLabelText('Capture text').props.style).color;
+    expect(color()).toBe(lightTheme.colors.text);
 
     await systemAppearance('dark');
-    expect(color()).toBe(darkTheme.colors.textMuted);
+    expect(color()).toBe(darkTheme.colors.text);
   });
 });
