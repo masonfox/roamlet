@@ -8,12 +8,21 @@
 ;;; Code:
 
 (require 'json)
+(require 'subr-x)
 (require 'org)
 (require 'org-roam)
 
 (defun oracle--sorted (values)
   "Return VALUES, a list of strings, as a sorted vector."
   (vconcat (sort (copy-sequence values) #'string<)))
+
+(defun oracle--line-start (file pos)
+  "Return the start of the line holding POS in FILE.
+Org-roam can record a position inside a heading line, past its stars."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char pos)
+    (line-beginning-position)))
 
 (defun oracle--dump (root)
   "Return what Org-roam's database holds for ROOT, with paths relative to it."
@@ -22,7 +31,7 @@
       (push tag (gethash node tags)))
     `((versions . ((emacs . ,emacs-version)
                    (org . ,(org-version))
-                   (org-roam . ,(or (ignore-errors (org-roam-version)) "unknown"))))
+                   (org-roam . ,(string-trim (or (ignore-errors (org-roam-version)) "unknown")))))
       (files . ,(oracle--sorted
                  (mapcar (lambda (row) (file-relative-name (car row) root))
                          (org-roam-db-query [:select file :from files]))))
@@ -31,7 +40,7 @@
                            `((id . ,id)
                              (file . ,(file-relative-name file root))
                              (level . ,level)
-                             (pos . ,pos)
+                             (pos . ,(oracle--line-start file pos))
                              (title . ,title)
                              (tags . ,(oracle--sorted (gethash id tags)))))
                          (org-roam-db-query

@@ -454,10 +454,6 @@ function fillHeading(text: string, heading: OrgHeading, todoKeywords: string[]):
     pos += priority[0].length;
   }
 
-  if (wordAt(text, pos, lineEnd) === 'COMMENT') {
-    pos = skipBlanks(text, pos + 'COMMENT'.length, lineEnd);
-  }
-
   let titleEnd = trimBlanksEnd(text, pos, lineEnd);
   let tokenStart = titleEnd;
   while (tokenStart > pos && text[tokenStart - 1] !== ' ' && text[tokenStart - 1] !== '\t') {
@@ -489,10 +485,14 @@ function nodeIdOf(properties: OrgProperty[]): string | null {
   const id = properties.find((property) => property.key.toUpperCase() === 'ID');
   if (!id || id.value === '') return null;
   const exclude = properties.find((property) => property.key.toUpperCase() === 'ROAM_EXCLUDE');
-  return exclude && exclude.value !== '' && exclude.value !== 'nil' ? null : id.value;
+  // Org reads only the literal `nil` as unset, so an empty value still excludes.
+  return exclude && exclude.value !== 'nil' ? null : id.value;
 }
 
-/** `#+TODO: NEXT(n) WAITING(w@/!) | CANCELLED(c)` and its SEQ_ and TYP_ variants. */
+/**
+ * `#+TODO: NEXT(n) WAITING(w@/!) | CANCELLED(c)` and its SEQ_ and TYP_ variants. Declaring any
+ * replaces the defaults rather than adding to them.
+ */
 function collectTodoKeywords(keywords: OrgKeyword[]): string[] {
   const declared: string[] = [];
   for (const keyword of keywords) {
@@ -502,7 +502,7 @@ function collectTodoKeywords(keywords: OrgKeyword[]): string[] {
       if (name !== '' && name !== '|') declared.push(name);
     }
   }
-  return unique([...DEFAULT_TODO_KEYWORDS, ...declared]);
+  return declared.length > 0 ? unique(declared) : [...DEFAULT_TODO_KEYWORDS];
 }
 
 function collectFileTags(keywords: OrgKeyword[]): string[] {

@@ -1,0 +1,9 @@
+﻿:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000094
+:END:
+#+title: BOM with a heading
+
+* Heading after a BOM
+:PROPERTIES:
+:ID:       00000000-0000-4000-8000-000000000095
+:END:

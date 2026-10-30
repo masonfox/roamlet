@@ -27,7 +27,7 @@ export interface OrgHeading extends ElementBase {
   level: number;
   todo: string | null;
   priority: string | null;
-  /** Excludes stars, TODO keyword, priority, COMMENT, and tags. Links show their description. */
+  /** Excludes stars, TODO keyword, priority, and tags. Links show their description. */
   title: string;
   /** The title as written, which may hold link syntax. */
   titleSpan: Span;
@@ -152,7 +152,7 @@ export interface OrgDocument {
   tags: string[];
   /** The file-level property drawer, whether or not it makes the file a node. */
   fileDrawer: OrgDrawer | null;
-  /** Keywords that mark a heading's TODO state: `TODO`, `DONE`, and those the file declares. */
+  /** Keywords that mark a heading's TODO state: those the file declares, else `TODO` and `DONE`. */
   todoKeywords: string[];
   /**
    * Where the editable body starts: after the leading run of blank lines, comments, the file

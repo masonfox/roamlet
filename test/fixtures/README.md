@@ -20,6 +20,9 @@ Org treats a line starting with stars and a space as a heading even inside a blo
 | `metadata.org` | Keyword casing, value spacing, first title wins, tags from several `#+filetags`, no node |
 | `20260101120000-foo.org` | No title keyword: the title falls back to the file name |
 | `comments-before-drawer.org` | Blank and comment lines before the file drawer |
+| `drawer-after-blank.org` | Only a blank line before the file drawer |
+| `drawer-after-comment.org` | Only a comment line before the file drawer |
+| `bom-heading.org` | A heading node's position in a file with a BOM |
 | `drawer-after-content.org` | A drawer after a paragraph is not file-level |
 | `keyword-before-drawer.org` | A drawer after a keyword is not file-level |
 | `heading-nodes-no-file-id.org` | Heading nodes in a file with no file-level node |
@@ -41,4 +44,4 @@ Org treats a line starting with stars and a space as a heading even inside a blo
 | `note.org` | The original of a sync conflict |
 | `note.sync-conflict-20260115-093000-ABCDEFG.org` | Syncthing's conflict copy of `note.org`, with the same IDs |
 | `note (Laptop's conflicted copy 2026-01-15).org` | Dropbox's conflict copy of `note.org`, with the same IDs |
-| `broken-links.org` | Missing target, empty target, and unclosed and empty-description bracket links, which currently leave a plain `id:` link behind (a best guess for task 3.4) |
+| `broken-links.org` | Missing target, empty target, and unclosed and empty-description bracket links, which leave a plain `id:` link behind |

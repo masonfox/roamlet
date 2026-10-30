@@ -134,7 +134,7 @@ describe('heading parsing', () => {
     ['* T a:b:', null, null, 'T a:b:', []],
     ['* Todo soon', null, null, 'Todo soon', []],
     ['*   Spaced   :x:  ', null, null, 'Spaced', ['x']],
-    ['** COMMENT Hidden', null, null, 'Hidden', []],
+    ['** COMMENT Kept', null, null, 'COMMENT Kept', []],
   ])('parses %j', (line, todo, priority, title, tags) => {
     expect(parse(line)).toMatchObject({ todo, priority, title, tags });
   });
@@ -194,8 +194,32 @@ describe('document facts', () => {
   });
 });
 
-describe('best guesses pending conformance (task 3.4)', () => {
+describe('behaviors settled by conformance (task 3.4)', () => {
   const id = ':PROPERTIES:\n:ID: x\n:END:\n';
+
+  it('replaces the default TODO keywords when a file declares any', () => {
+    const doc = scan('#+TODO: NEXT | DROPPED\n* NEXT A\n* TODO B\n* DONE C\n');
+    const titles = doc.elements.flatMap((element) => (element.kind === 'heading' ? [element.title] : []));
+    expect(titles).toEqual(['A', 'TODO B', 'DONE C']);
+    expect(doc.todoKeywords).toEqual(['NEXT', 'DROPPED']);
+  });
+
+  it.each([
+    [':ROAM_EXCLUDE:', []],
+    [':ROAM_EXCLUDE: t', []],
+    [':ROAM_EXCLUDE: false', []],
+    [':roam_exclude: t', []],
+    [':ROAM_EXCLUDE: nil', ['a']],
+  ])('treats %s as excluded unless it is nil', (property, ids) => {
+    const doc = scan(`* A\n:PROPERTIES:\n:ID: a\n${property}\n:END:\n`);
+    expect(doc.nodes.map((node) => node.id)).toEqual(ids);
+  });
+
+  it('allows spaces inside an angle link, not across lines', () => {
+    const targets = (body: string) => scan(`${id}${body}\n`).links.map((link) => link.target);
+    expect(targets('<id:a b>')).toEqual(['a b']);
+    expect(targets('<id:a b\nc>')).toEqual(['a']);
+  });
 
   it('does not inherit ROAM_EXCLUDE', () => {
     const doc = scan(`* A\n:PROPERTIES:\n:ID: a\n:ROAM_EXCLUDE: t\n:END:\n** B\n${id}`);

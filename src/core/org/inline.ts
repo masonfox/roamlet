@@ -18,7 +18,7 @@ const MAX_NEWLINES = 1;
 const MAX_DEPTH = 8;
 
 const LINK_TYPE = /^([A-Za-z][A-Za-z0-9+.-]*):/;
-const ANGLE_LINK = /<(id|https?|mailto|file):([^\s<>]+)>/y;
+const ANGLE_LINK = /<(id|https?|mailto|file):([^\s<>](?:[^<>\r\n]*[^\s<>])?)>/y;
 const PLAIN_LINK = /(id|https?|mailto|file):([^\s()<>[\]]+)/y;
 const PLAIN_LINK_STARTS = 'ihmf';
 const WORD_CHAR = /[\p{L}\p{N}_]/u;

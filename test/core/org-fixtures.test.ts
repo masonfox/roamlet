@@ -61,7 +61,7 @@ describe('fixture expectations', () => {
       [id(1), 0, 'Headings', []],
       [id(2), 1, 'Heading node', ['tag1']],
       [id(3), 2, 'Nested node', ['tag1', 'tag2', 'tag_3']],
-      [id(4), 1, 'Commented heading', []],
+      [id(4), 1, 'COMMENT Commented heading', []],
     ]);
     expect(doc.elements.filter((element) => element.kind === 'heading')).toHaveLength(6);
   });
@@ -72,7 +72,7 @@ describe('fixture expectations', () => {
       'Declared after the bar',
       'Declared through SEQ_TODO',
       'Declared through TYP_TODO',
-      'Built in',
+      'TODO Built in',
       'LATER Not declared stays in the title',
       'todo Lowercase stays in the title',
     ]);
@@ -242,7 +242,7 @@ describe('fixture expectations', () => {
 
   it('broken-links.org', () => {
     const doc = load('broken-links.org');
-    // Unclosed and empty-description bracket links leave a plain link behind (best guess, task 3.4).
+    // Unclosed and empty-description bracket links leave a plain link behind, as they do in Org-roam.
     expect(doc.links.map((link) => [link.target, link.form])).toEqual([
       ['00000000-0000-4000-8000-999999999999', 'bracket'],
       [id(1), 'plain'],
