@@ -72,7 +72,7 @@ Why custom rather than `org-mode-ast`, the strongest candidate:
 
 - Only `TODO`, `DONE`, and keywords declared in the file (`#+TODO` and its variants) are recognized when stripping heading titles. Keywords configured globally in Emacs are not visible to the app and will appear in titles.
 - `org-roam-db-node-include-function` and other Emacs customization are not visible to the app.
-- `id:` links in plain or angle form are a known gap until conformance results (Decision 8) show whether they matter in practice.
+- Conformance results (Decision 8) settled the behaviors once left open: Org-roam counts `id:` links in plain and angle form and in property drawers and keywords, so the scanner does too. `ROAM_EXCLUDE` is not inherited. Remaining differences from Org-roam, such as a blank line before the file drawer, a missing title, multiple titles, and duplicate IDs, are listed with reasons in `test/emacs/allowlist.json`.
 
 **The fixture bug worth remembering:** An early probe wrongly appeared to show parsers failing on a source block, because the fixture had an unescaped `* ` line inside the block. Org really does treat that as a heading, and `,*` is the escape. Both behaviors are now specified, and fixtures must follow them.
 

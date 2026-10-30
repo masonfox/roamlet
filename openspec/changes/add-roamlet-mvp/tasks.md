@@ -24,10 +24,10 @@
 
 ## 3. Milestone 2: Emacs conformance harness
 
-- [ ] 3.1 Write `test/emacs/oracle.el` to run `org-roam-db-sync` in batch mode on a directory and dump nodes and links as JSON, and verify it runs against the corpus locally or in CI
-- [ ] 3.2 Add a comparison test between oracle and scanner results with a checked-in allowlist of justified differences, and verify an injected scanner bug fails it
-- [ ] 3.3 Add the CI job with pinned Emacs and Org-roam versions and verify it passes on the corpus
-- [ ] 3.4 Resolve the behaviors `design.md` leaves to conformance (`ROAM_EXCLUDE` inheritance, plain and angle `id:` links, links in property drawers and keywords, duplicate IDs in sync-conflict copies) by fixing the scanner or adding allowlist entries, and verify the job is green
+- [x] 3.1 Write `test/emacs/oracle.el` to run `org-roam-db-sync` in batch mode on a directory and dump nodes and links as JSON, and verify it runs against the corpus locally or in CI
+- [x] 3.2 Add a comparison test between oracle and scanner results with a checked-in allowlist of justified differences, and verify an injected scanner bug fails it
+- [x] 3.3 Add the CI job with pinned Emacs and Org-roam versions and verify it passes on the corpus
+- [x] 3.4 Resolve the behaviors `design.md` leaves to conformance (`ROAM_EXCLUDE` inheritance, plain and angle `id:` links, links in property drawers and keywords, duplicate IDs in sync-conflict copies) by fixing the scanner or adding allowlist entries, and verify the job is green
 
 ## 4. Milestone 3: Editing operations
 
