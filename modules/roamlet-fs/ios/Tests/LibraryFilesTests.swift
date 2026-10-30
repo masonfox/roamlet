@@ -182,7 +182,7 @@ final class LibraryFilesTests: XCTestCase {
       XCTAssertFalse(competingReadFinished, "a coordinated read got in during the write")
     }
     XCTAssertEqual(observed.replaceFile("note.org", bytes: newBytes, expectedHash: hash(oldBytes)), .replaced(hash: hash(newBytes)))
-    wait(for: [competingRead], timeout: 5)
+    wait(for: [competingRead], timeout: 60)
   }
 
   func testCoordinationWaitIsBoundedWhenAnotherWriterHoldsTheFile() throws {
@@ -199,14 +199,15 @@ final class LibraryFilesTests: XCTestCase {
       }
       released.fulfill()
     }
-    wait(for: [holding], timeout: 5)
+    // Generous: on a CI simulator, a first coordination has taken over 5 seconds to get access.
+    wait(for: [holding], timeout: 60)
 
     var impatient = LibraryFiles(root: root)
     impatient.coordinationTimeout = 0.2
     XCTAssertThrowsError(try impatient.readBytes("note.org"))
 
     release.signal()
-    wait(for: [released], timeout: 5)
+    wait(for: [released], timeout: 60)
     XCTAssertEqual(try contents("note.org"), oldBytes)
   }
 

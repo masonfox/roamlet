@@ -65,4 +65,8 @@ jobs:
             -sdk iphonesimulator \
             -destination "generic/platform=iOS Simulator" \
             CODE_SIGNING_ALLOWED=NO \
-            | tail -n 200
+            > build.log || { tail -n 200 build.log; exit 1; }
+          tail -n 20 build.log
+      - name: Check that the module's Swift was compiled
+        working-directory: ios
+        run: grep "RoamletFsModule.swift" build.log | grep -m 1 -E "SwiftCompile|Compiling"
