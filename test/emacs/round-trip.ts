@@ -111,6 +111,9 @@ const CAPTURES = [
   '[[Wrapped]]',
 ];
 
+/** Org-roam and the scanner both show a link in a title as its description. */
+const TITLES_AS_SHOWN: Record<string, string> = { '[[Wrapped]]': 'Wrapped' };
+
 const FAKE_LINK = `[[id:${fixtureId('02')}][Fake]]`;
 
 /** With no `anchor`, the link goes in a new line at the end of the file. */
@@ -284,9 +287,10 @@ export function buildScenario(name: ScenarioName, fixtures: Record<string, Buffe
           { newId: () => noteId(index) },
           { now: () => new Date(2026, 5, 15, 10, 30, 0) },
         )!;
-        const { id, title, fileName } = note;
+        const { id, fileName } = note;
+        const title = TITLES_AS_SHOWN[note.title] ?? note.title;
         files[fileName] = encodeUtf8(note.content);
-        expected[fileName] = Buffer.from(newNoteContent(id, title, capture));
+        expected[fileName] = Buffer.from(newNoteContent(id, note.title, capture));
         result.created.push({ id, title, fileName });
         result.effect.newNodes.push({ id, file: fileName, title });
       });
