@@ -40,7 +40,7 @@
 
 ## 5. Milestone 4: Native file layer and save handling
 
-- [ ] 5.1 Write a shared `FileStore` contract test and an in-memory `FileStore` with fault injection, and verify the in-memory store passes in Node
+- [x] 5.1 Write a shared `FileStore` contract test and an in-memory `FileStore` with fault injection, and verify the in-memory store passes in Node
 - [ ] 5.2 Finish `roamlet-fs` on Android with both save paths, recovery, the batched listing, and name verification, and verify a Kotlin test with a fake documents provider that fails at every step always recovers complete old or new content with no temp files left
 - [ ] 5.3 Finish `roamlet-fs` on iOS with coordination throughout, stale bookmark refresh, access-state reporting, and download status, and verify with the on-device contract test through an EAS build
 - [ ] 5.4 Add the `FileStore` adapter over the module for both root kinds, including the app-owned folder, and verify the contract test passes on one iOS and one Android device
