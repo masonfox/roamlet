@@ -13,6 +13,7 @@ export default function NotesLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ title: 'Notes' }} />
+      <Stack.Screen name="read" options={{ title: 'Note' }} />
     </Stack>
   );
 }
