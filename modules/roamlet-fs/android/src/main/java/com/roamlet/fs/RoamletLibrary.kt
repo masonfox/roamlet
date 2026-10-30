@@ -135,6 +135,8 @@ internal class RoamletLibrary(
         ?: throw FileNotFoundException("no folder for $path")
       val target = backend.children(parent).firstOrNull { it.name == segments.last() }
         ?: throw FileNotFoundException("no file at $path")
+      // A swap could replace it anyway, through its folder, so the refusal has to be honored here.
+      if (!target.canWrite) throw SecurityException("the provider refuses writes to $path")
       val current = readAll(target)
       val currentHash = sha256(current)
       if (currentHash != expectedHash) return@synchronized ReplaceOutcome.Stale(currentHash)

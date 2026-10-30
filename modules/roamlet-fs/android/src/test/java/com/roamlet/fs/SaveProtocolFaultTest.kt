@@ -135,6 +135,7 @@ class SaveProtocolFaultTest {
         }
       }
       assertEquals(variant.label, steps * FaultKind.values().size, ended)
+      println("replace, ${variant.label}: $steps steps, $ended faulted saves, $old kept old, $new took new")
       // If one side never happens, the faults aren't reaching the interesting states.
       assertTrue("${variant.label}: some saves rolled back ($old)", old > 0)
       assertTrue("${variant.label}: some saves went forward ($new)", new > 0)
@@ -263,6 +264,7 @@ class SaveProtocolFaultTest {
     for (variant in CREATE_VARIANTS) {
       val steps = cleanRunLength(variant) { it.open().createExclusive(NEW_NOTE, NEW_BYTES) }
       assertTrue("${variant.label}: the protocol has steps ($steps)", steps >= 5)
+      println("create, ${variant.label}: $steps steps, ${steps * FaultKind.values().size} faulted saves")
       for (kind in FaultKind.values()) {
         for (failAt in 0 until steps) {
           val library = seeded(variant)

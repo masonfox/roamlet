@@ -28,6 +28,8 @@ internal data class Quirks(
   val renameChangesId: Boolean = false,
   /** Makes names unique rather than refusing a name in use, as the Android file provider does. */
   val uniqueNames: Boolean = false,
+  /** Refuses writes to its files, though its folders still allow new documents and renames. */
+  val readOnlyFiles: Boolean = false,
 )
 
 /**
@@ -220,12 +222,13 @@ internal class FakeDocumentsProvider : DocumentsProvider() {
     row.add(Document.COLUMN_SIZE, node.file?.length() ?: 0L)
     row.add(Document.COLUMN_LAST_MODIFIED, node.file?.lastModified() ?: 0L)
     val rename = if (quirks.supportsRename) Document.FLAG_SUPPORTS_RENAME else 0
+    val write = if (quirks.readOnlyFiles) 0 else Document.FLAG_SUPPORTS_WRITE
     row.add(
       Document.COLUMN_FLAGS,
       if (node.isDir) {
         Document.FLAG_DIR_SUPPORTS_CREATE or rename
       } else {
-        Document.FLAG_SUPPORTS_WRITE or Document.FLAG_SUPPORTS_DELETE or rename
+        write or Document.FLAG_SUPPORTS_DELETE or rename
       },
     )
   }

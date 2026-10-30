@@ -271,6 +271,67 @@ class RoamletLibraryTest {
   }
 
   @Test
+  fun recoveryPutsTheOriginalBackWhenTheTempIsIncomplete() = bothKinds { library ->
+    library.journals.write(Journal("id", SaveMode.SWAP, "a.org", sha256(NEW_BYTES)))
+    library.seed(".roamlet-id.old", OLD_BYTES)
+    library.seed(".roamlet-id.tmp", NEW_BYTES.copyOf(5))
+
+    assertEquals(RecoverOutcome.Ok, library.open().recover())
+
+    assertEquals(setOf("a.org"), library.snapshot().keys)
+    assertEquals(OLD_BYTES.toList(), library.snapshot()["a.org"])
+  }
+
+  @Test
+  fun recoveryPutsTheOriginalBackWhenTheTempIsGone() = bothKinds { library ->
+    library.journals.write(Journal("id", SaveMode.SWAP, "a.org", sha256(NEW_BYTES)))
+    library.seed(".roamlet-id.old", OLD_BYTES)
+
+    assertEquals(RecoverOutcome.Ok, library.open().recover())
+
+    assertEquals(setOf("a.org"), library.snapshot().keys)
+    assertEquals(OLD_BYTES.toList(), library.snapshot()["a.org"])
+  }
+
+  @Test
+  fun recoveryFinishesASwapFromACompleteTemp() = bothKinds { library ->
+    library.journals.write(Journal("id", SaveMode.SWAP, "a.org", sha256(NEW_BYTES)))
+    library.seed(".roamlet-id.old", OLD_BYTES)
+    library.seed(".roamlet-id.tmp", NEW_BYTES)
+
+    assertEquals(RecoverOutcome.Ok, library.open().recover())
+
+    assertEquals(setOf("a.org"), library.snapshot().keys)
+    assertEquals(NEW_BYTES.toList(), library.snapshot()["a.org"])
+  }
+
+  @Test
+  fun recoveryRestoresABackupOverAPartialFile() = bothKinds { library ->
+    library.seed("a.org", NEW_BYTES.copyOf(5))
+    library.journals.writeBackup("id", OLD_BYTES)
+    library.journals.write(Journal("id", SaveMode.IN_PLACE, "a.org", sha256(NEW_BYTES), sha256(OLD_BYTES)))
+
+    assertEquals(RecoverOutcome.Ok, library.open().recover())
+
+    assertEquals(OLD_BYTES.toList(), library.snapshot()["a.org"])
+    assertEquals(emptyList<String>(), library.journalDir.allFiles())
+  }
+
+  @Test
+  fun aFileTheProviderRefusesToWriteIsLeftAlone() {
+    val library = saf(Quirks(readOnlyFiles = true))
+    try {
+      library.seed("a.org", OLD_BYTES)
+      val outcome = library.open().replaceFile("a.org", NEW_BYTES, sha256(OLD_BYTES))
+      assertEquals("access_denied", (outcome as ReplaceOutcome.Failed).failure.kind)
+      assertEquals(OLD_BYTES.toList(), library.snapshot()["a.org"])
+      assertEquals(setOf("a.org"), library.snapshot().keys)
+    } finally {
+      library.close()
+    }
+  }
+
+  @Test
   fun recoverySweepsStrandedBackups() = bothKinds { library ->
     library.journals.writeBackup("stranded", OLD_BYTES)
 
