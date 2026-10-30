@@ -32,6 +32,15 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: npm ci
       - run: npx expo prebuild --platform android --no-install
+      - name: Install the SDK components Gradle asks for
+        working-directory: android
+        # Gradle fetches these while configuring, and a corrupt NDK download fails the whole run.
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew help --no-daemon && exit 0
+            echo "attempt $attempt failed"
+          done
+          exit 1
       - name: Compile the module and run its tests
         working-directory: android
         run: ./gradlew :roamlet-fs:compileDebugKotlin :roamlet-fs:testDebugUnitTest --no-daemon --stacktrace
