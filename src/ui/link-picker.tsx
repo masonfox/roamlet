@@ -110,7 +110,10 @@ function LinkPickerContent({
       }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text accessibilityRole="header" style={[theme.type.title, { color: theme.colors.text, flex: 1 }]}>
+        <Text
+          accessibilityRole="header"
+          style={[theme.type.title, { color: theme.colors.text, flex: 1 }]}
+        >
           Insert link
         </Text>
         <Pressable
@@ -163,7 +166,9 @@ function LinkPickerContent({
             }
           >
             <Text style={[theme.type.body, { color: theme.colors.text }]}>{item.title}</Text>
-            <Text style={[theme.type.caption, { color: theme.colors.textMuted }]}>{item.location}</Text>
+            <Text style={[theme.type.caption, { color: theme.colors.textMuted }]}>
+              {item.location}
+            </Text>
           </Pressable>
         )}
       />

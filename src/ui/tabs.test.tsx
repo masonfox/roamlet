@@ -6,7 +6,6 @@ import RootLayout from '../../app/_layout';
 import TabsLayout from '../../app/(tabs)/_layout';
 import CaptureScreen from '../../app/(tabs)/capture';
 import NotesLayout from '../../app/(tabs)/notes/_layout';
-import NotesScreen from '../../app/(tabs)/notes/index';
 import SettingsScreen from '../../app/(tabs)/settings';
 import Index from '../../app/index';
 import { useLibrary } from './library-context';
@@ -52,10 +51,11 @@ describe('the real app routes', () => {
 describe('primary destinations', () => {
   it('opens on Notes and reaches every destination', async () => {
     const router = await renderRouter({
+      _layout: RootLayout,
       index: Index,
       '(tabs)/_layout': TabsLayout,
       '(tabs)/notes/_layout': NotesLayout,
-      '(tabs)/notes/index': NotesScreen,
+      '(tabs)/notes/index': () => <Text>Notes screen</Text>,
       '(tabs)/capture': CaptureScreen,
       '(tabs)/settings': () => <Text>Settings screen</Text>,
     });

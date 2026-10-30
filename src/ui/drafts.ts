@@ -29,7 +29,10 @@ export interface DraftStorage {
 }
 
 function failureOf(error: unknown): FileStoreFailure {
-  return { kind: 'provider_error', message: error instanceof Error ? error.message : String(error) };
+  return {
+    kind: 'provider_error',
+    message: error instanceof Error ? error.message : String(error),
+  };
 }
 
 /**
@@ -257,12 +260,9 @@ function nativeDraftStorage(): DraftStorage {
 }
 
 async function loadNativeDraftStorage(): Promise<DraftStorage> {
-  const [{ RoamletFs }, { Directory, File }, { CryptoDigestAlgorithm, digestStringAsync }] =
-    await Promise.all([
-      import('../../modules/roamlet-fs'),
-      import('expo-file-system'),
-      import('expo-crypto'),
-    ]);
+  const [{ RoamletFs }, { File }, { CryptoDigestAlgorithm, digestStringAsync }] = await Promise.all(
+    [import('../../modules/roamlet-fs'), import('expo-file-system'), import('expo-crypto')],
+  );
 
   // The path has spaces on iOS (`Application Support`), so it needs encoding as a URI.
   const root = `file://${encodeURI(RoamletFs.internalDirectory())}`;
@@ -275,7 +275,7 @@ async function loadNativeDraftStorage(): Promise<DraftStorage> {
     },
     write: async (path, text) => {
       const file = fileAt(path);
-      new Directory(file.parentDirectory).create({ intermediates: true, idempotent: true });
+      file.parentDirectory.create({ intermediates: true, idempotent: true });
       if (file.exists) file.delete();
       file.write(text);
     },
