@@ -11,7 +11,7 @@
 - [ ] 1.9 Re-check Google Drive and OneDrive folder access on iOS, and confirm whether Dropbox on Android offers folder access, and record both in `docs/validation.md`
 - [ ] 1.10 Run assumptions A3–A7, A9, and A10 from `design.md`, and record pass or fail and any fallback taken in `docs/validation.md`
 - [ ] 1.11 Record A8 baseline numbers for listing and hashing on a local folder and a cloud folder in `docs/validation.md`
-- [ ] 1.12 Apply the go/no-go rules: if iCloud Drive or safe saves on a primary provider aren't reliable, stop and report to the maintainer. Otherwise update `design.md` for any failed assumption, delete the throwaway screen, and verify it is gone from the app
+- [ ] 1.12 Apply the go/no-go rules: if iCloud Drive or safe saves on a primary provider aren't reliable, stop and report to the maintainer. Otherwise update `design.md` for any failed assumption, and once tasks 5.4 and 6.8 have run on it, delete the throwaway screen and its contract and benchmark helpers (`src/adapters/roamlet-fs-contract.ts`, `src/adapters/library-benchmark.ts`), and verify they are gone from the app
 
 ## 2. Milestone 1: Org scanner
 
