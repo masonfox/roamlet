@@ -2,9 +2,10 @@
 // bytes, on a real device. Task 1.12 deletes it. Open it with the roamlet:///spike link.
 
 import { useState } from 'react';
-import { Button, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
+import { Button, FlatList, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { RoamletFs, type FileEntry, type LibraryRoot } from '../modules/roamlet-fs';
+import { runContractOnDevice } from '../src/adapters/roamlet-fs-contract';
 
 // A BOM, CRLF, an accented character, and an emoji: anything that re-encodes would change these.
 const TEST_BYTES = Uint8Array.from([
@@ -92,6 +93,17 @@ export default function Spike() {
       await list(root);
     });
 
+  const runContract = () =>
+    run('contract', async () => {
+      say('contract: running');
+      const results = await runContractOnDevice(RoamletFs, root, Platform.OS);
+      for (const { name, error } of results) {
+        say(error === undefined ? `PASS ${name}` : `FAIL ${name}: ${String(error)}`);
+      }
+      const failed = results.filter((result) => result.error !== undefined).length;
+      say(`contract: ${results.length - failed} passed, ${failed} failed`);
+    });
+
   return (
     <View style={{ flex: 1, padding: 16, gap: 8 }}>
       <Text>Root: {root.kind === 'external' ? root.name : 'app-owned'}</Text>
@@ -99,6 +111,7 @@ export default function Spike() {
       <Button title="Pick folder" onPress={pick} />
       <Button title="Restore, recover, and list" onPress={restoreAndRecover} />
       <Button title="Create a test file" onPress={create} />
+      <Button title="Run the FileStore contract in a scratch folder" onPress={runContract} />
       <Text>Tap a file to replace it with the test bytes. This overwrites it.</Text>
       <FlatList
         style={{ flex: 1 }}
