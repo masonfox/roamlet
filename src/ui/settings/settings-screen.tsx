@@ -15,7 +15,7 @@ const APP_OWNED_NAME = 'Roamlet’s own folder';
 
 const PROVIDER_GUIDANCE: string =
   Platform.select({
-    ios: 'Choose a folder from iCloud Drive, Dropbox, Working Copy, or this iPhone. Some providers, such as Google Drive and OneDrive, may not allow folder access. If so, Roamlet will say so and keep your current library.',
+    ios: 'Choose a folder from iCloud Drive, Dropbox, Working Copy, or this device. Some providers, such as Google Drive and OneDrive, may not allow folder access. If so, Roamlet will say so and keep your current library.',
     android: `A folder on this device works best, such as one Syncthing keeps up to date. Cloud apps may not offer their folders here. ${ANDROID_FOLDER_GUIDANCE}`,
   }) ?? '';
 
