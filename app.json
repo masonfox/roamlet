@@ -9,10 +9,17 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.roamlet.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.roamlet.app"
+      "package": "com.roamlet.app",
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -27,6 +34,11 @@
           "enableFileSharing": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "289dc43c-42ec-4f3b-9550-280275a34e55"
+      }
+    }
   }
 }
